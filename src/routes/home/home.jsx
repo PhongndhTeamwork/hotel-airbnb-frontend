@@ -1,7 +1,7 @@
 import "./home.scss";
 
 const Home = () => {
-   return <div>bruh</div>;
+   return <div>Home</div>;
 };
 
 export default Home;
