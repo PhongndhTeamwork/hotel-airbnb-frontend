@@ -1,37 +1,52 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import {
-   USER_LOGIN_REQUEST,
-   USER_LOGIN_FAIL,
-   USER_LOGIN_SUCCESS,
-   USER_LOGOUT,
-} from "../constants/userConstants";
+export const login = createAsyncThunk("USER_LOGIN", async (info, thunkAPI) => {
+   try {
+      const config = {
+         headers: {
+            "Content-Type": "application/json",
+         },
+      };
+      const data = "Phongngg";
+      // const { data } = await axios.post("/api/user/login/", info, config);
+      return data;
+   } catch (error) {
+      return thunkAPI.rejectWithValue(
+         error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message
+      );
+   }
+});
 
 export const userLoginSlice = createSlice({
    name: "user",
    initialState: {
-      user: localStorage.getItem("userInfo")
+      userInfo: localStorage.getItem("userInfo")
          ? JSON.parse(localStorage.getItem("userInfo"))
          : null,
+      loading: false,
+      error: null,
    },
-   reducers: {
-      userLoginReducer: (state, action) => {
-         switch (action.type) {
-            case USER_LOGIN_REQUEST:
-               return { loading: true };
-            case USER_LOGIN_SUCCESS:
-               return { loading: false, userInfo: action.payload };
-            case USER_LOGIN_FAIL:
-               return { loading: false, error: action.payload };
-            case USER_LOGOUT:
-               return {};
-            default:
-               return state;
-         }
-      },
+   // reducers:
+   extraReducers: (builder) => {
+      builder
+         .addCase(login.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+         })
+         .addCase(login.fulfilled, (state, action) => {
+            state.loading = false;
+            state.userInfo = action.payload;
+            localStorage.setItem("userInfo", JSON.stringify(action.payload));
+         })
+         .addCase(login.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+         });
    },
 });
 
-export const { userLoginReducer } = userLoginSlice.actions;
+// export const { login } = userLoginSlice.actions;
 
 export default userLoginSlice.reducer;
