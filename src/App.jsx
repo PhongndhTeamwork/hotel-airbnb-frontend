@@ -2,10 +2,11 @@ import "./App.scss";
 
 import { Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
-import Header from "./routes/header/header";
-import Footer from "./routes/footer/footer";
+import Header from "./components/header/header";
+import Footer from "./components/footer/footer";
+import Navbar from "./components/navbar/navbar";
 import Home from "./routes/home/home";
-import Navbar from "./routes/navbar/navbar";
+
 
 const App = () => {
    return (
