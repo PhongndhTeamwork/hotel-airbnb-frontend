@@ -5,11 +5,13 @@ import { Container } from "react-bootstrap";
 import Header from "./routes/header/header";
 import Footer from "./routes/footer/footer";
 import Home from "./routes/home/home";
+import Navbar from "./routes/navbar/navbar";
 
 const App = () => {
    return (
       <div className="App">
          <div className="App">
+            <Navbar />
             <Header />
             <main>
                <Container

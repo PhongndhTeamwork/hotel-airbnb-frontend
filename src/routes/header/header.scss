@@ -1,0 +1,49 @@
+.header{
+    background-color: #003580;
+    color: white;
+    display: flex;
+    justify-content: center;
+    .header-container{
+        width: 100%;
+        max-width: 1024px;
+        margin: 20px 0px 100px;
+        .header-list__icon {
+            margin-right: 5px;
+          }
+        .header-list{
+            display: flex;
+            gap: 40px;
+            .header-list__item{
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .header-list__item a {
+                text-decoration: none;
+                color: inherit;
+                transition: color 0.3s ease;
+              }
+              
+            .header-list__item a:hover {
+                color: #ccc;
+              }
+        }
+        .header-title{
+            margin: 20px 0px;
+        }
+
+        .header-btn{
+            background-color: #0071c2;
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            padding: 10px;  
+            cursor: pointer;
+
+        }
+    }
+
+}
+
+
