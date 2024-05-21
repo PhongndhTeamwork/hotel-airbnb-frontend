@@ -1,13 +1,13 @@
 .navbar{
     height: 50px;
-    background-color: #003580;
+    background-color: white;
     display: flex ;
     justify-content: center!important;
         
     .nav-container{
         width: 100%;
         max-width: 1024px;
-        color: white;
+        color: black;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -23,10 +23,12 @@
             border: none;
             padding: 5px 10px;
             cursor: pointer;
+            border: 0.1px solid black;
             border-radius: 8px;
-            color: #003580;
+            color: black;
+            box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1); // Added box-shadow
             &:hover{
-                background-color: rgb(225, 215, 215);
+                background-color:   rgb(225, 215, 215);
                 position: relative;
                 bottom: 2px;
                 transition: background-color 0.5s ease;
