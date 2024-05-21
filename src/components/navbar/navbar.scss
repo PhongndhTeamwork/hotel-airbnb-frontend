@@ -1,6 +1,6 @@
 .navbar{
     height: 50px;
-    background-color: white;
+    background-color: #f8f9fa;
     display: flex ;
     justify-content: center!important;
         
@@ -20,10 +20,10 @@
         .nav-btn{
             margin-top: 5px;
             margin-left: 20px;
-            border: none;
+            // border: none;
             padding: 5px 10px;
             cursor: pointer;
-            border: 0.1px solid black;
+            border: 1px solid darkgray;
             border-radius: 8px;
             color: black;
             box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1); // Added box-shadow
