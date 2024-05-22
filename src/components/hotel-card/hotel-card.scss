@@ -1,0 +1,53 @@
+.hotel-card {
+   margin-bottom: 2rem;
+
+   .hotel-card__image {
+      img {
+         border-top-left-radius: 0.5rem;
+         border-top-right-radius: 0.5rem;
+         aspect-ratio: 1/1;
+      }
+
+      .carousel-indicators {
+         display: none;
+      }
+
+      .carousel-control-prev {
+         display: none;
+      }
+
+      .carousel-control-next {
+         display: none;
+      }
+
+      &:hover {
+
+         .carousel-control-prev,
+         .carousel-control-next {
+            display: flex;
+         }
+      }
+   }
+
+   .hotel-card__body {
+      padding: 1rem 0.75rem;
+      text-align: left;
+      background-color: antiquewhite;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+
+      p {
+         margin-bottom: 0.5rem;
+      }
+
+      .hotel-card__price {
+
+         img {
+            position: relative;
+            top: 1.5px
+         }
+      }
+
+   }
+
+}

@@ -49,6 +49,12 @@ const Signup = () => {
                      variant="outlined"
                      className="signup__input"
                   />
+                  <TextField
+                     id="outlined-basic"
+                     label="Name"
+                     variant="outlined"
+                     className="signup__input"
+                  />
                   <FormControl
                      sx={{ m: 1, width: "25ch" }}
                      variant="outlined"

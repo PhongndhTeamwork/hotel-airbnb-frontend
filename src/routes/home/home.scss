@@ -1,0 +1,28 @@
+.home {
+   padding: var(--suitable-padding);
+
+   // .row>* {
+   //    padding-right: calc(var(--bs-gutter-x)* 0.75);
+   //    padding-left: calc(var(--bs-gutter-x)* 0.75);
+   // }
+   .home__hotel-card {
+      transition: transform 0.5s ease;
+      &:hover {
+         cursor: pointer;
+         transform: scale(1.03);
+      }
+      
+   }
+
+   .page-link {
+      color: black;
+   }
+
+   .page-item.active {
+      .page-link {
+         background-color: black;
+         color: white;
+      }
+   }
+
+}

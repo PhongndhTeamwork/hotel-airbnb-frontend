@@ -1,0 +1,61 @@
+.hotel-detail {
+   padding: var(--suitable-padding);
+
+   .hotel-detail__image {
+      .row>* {
+         padding-right: calc(var(--bs-gutter-x)* 0.25);
+         padding-left: calc(var(--bs-gutter-x)* 0.25);
+      }
+
+      .hotel-detail__image-left {
+
+
+         padding-right: calc(var(--bs-gutter-x)* .25);
+         padding-left: calc(var(--bs-gutter-x)* .25);
+
+
+         img {
+            border-top-left-radius: 0.5rem;
+            border-bottom-left-radius: 0.5rem;
+            aspect-ratio: 1/1;
+         }
+      }
+
+      .hotel-detail__image-right {
+
+
+         padding-right: calc(var(--bs-gutter-x)* .25);
+         padding-left: calc(var(--bs-gutter-x)* .25);
+
+
+         img {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            aspect-ratio: 1/1;
+
+         }
+      }
+
+      .hotel-detail__image-right.row>*,
+      .hotel-detail__image-left.row>* {
+
+         padding-right: calc(var(--bs-gutter-x)* 0);
+         padding-left: calc(var(--bs-gutter-x)* 0);
+      }
+
+      .hotel-detail__image-middle {
+         padding-right: calc(var(--bs-gutter-x)* 0);
+         padding-left: calc(var(--bs-gutter-x)* 0);
+
+         img {
+            aspect-ratio: 1/1;
+         }
+
+         .hotel-detail__col {
+            padding-bottom: calc(var(--bs-gutter-x)* 0.5) !important;
+         }
+      }
+   }
+
+
+}

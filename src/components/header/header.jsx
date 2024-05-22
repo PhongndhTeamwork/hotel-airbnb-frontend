@@ -14,28 +14,28 @@ const Header = () => {
             <div className="header-list">
                <div className="header-list__item">
                   <FontAwesomeIcon icon={faHome} />
-                  <a href="#home">Home</a>
+                  <Link to="/">Home</Link>
                </div>
                <div className="header-list__item">
                   <FontAwesomeIcon
                      icon={faInfoCircle}
                      className="header-list__icon"
                   />
-                  <a href="#about">About</a>
+                  <Link to="">About</Link>
                </div>
                <div className="header-list__item">
                   <FontAwesomeIcon
                      icon={faTools}
                      className="header-list__icon"
                   />
-                  <a href="#services">Services</a>
+                  <Link to="">Services</Link>
                </div>
                <div className="header-list__item">
                   <FontAwesomeIcon
                      icon={faEnvelope}
                      className="header-list__icon"
                   />
-                  <a href="#contact">Contact</a>
+                  <Link to="#contact">Contact</Link>
                </div>
             </div>
             <h1 className="header-title">A lifetime of discount?</h1>
