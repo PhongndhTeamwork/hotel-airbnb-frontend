@@ -65,3 +65,12 @@
    }
 
 }
+
+@media (max-width: 1024px) {
+   .room-card {
+      room-card__rating {
+         display: none;
+      }
+   }
+
+}

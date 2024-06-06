@@ -18,7 +18,7 @@ const RoomCard = ({ room }) => {
                xs={12}
                sm={12}
                md={12}
-               lg={6}
+               lg={4}
                xl={4}
                xxl={4}
                className="room-card__image"
@@ -38,7 +38,7 @@ const RoomCard = ({ room }) => {
                      xs={12}
                      sm={12}
                      md={12}
-                     lg={6}
+                     lg={4}
                      xl={4}
                      xxl={4}
                      className="room-card__full-image"
@@ -53,7 +53,7 @@ const RoomCard = ({ room }) => {
                      xs={12}
                      sm={12}
                      md={12}
-                     lg={6}
+                     lg={4}
                      xl={4}
                      xxl={4}
                      className="room-card__full-image"
@@ -74,12 +74,12 @@ const RoomCard = ({ room }) => {
                   xs={12}
                   sm={12}
                   md={12}
-                  lg={6}
+                  lg={8}
                   xl={8}
                   xxl={8}
                   className="room-card__body"
                   onClick={() => {
-                     navigate("/room/1");
+                     navigate("/customer/room/1");
                   }}
                >
                   <div className="room-card__name one-line-restrict">

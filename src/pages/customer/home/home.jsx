@@ -1,19 +1,19 @@
 import "./home.scss";
-import HotelImage1 from "../../assets/images/hotel/hotel1.jpg";
-import HotelImage2 from "../../assets/images/hotel/hotel2.jpg";
-import HotelImage3 from "../../assets/images/hotel/hotel3.jpg";
-import HotelImage4 from "../../assets/images/hotel/hotel4.jpg";
-import HotelImage5 from "../../assets/images/hotel/hotel5.jpg";
-import HotelImage6 from "../../assets/images/hotel/hotel6.jpg";
-import HotelImage7 from "../../assets/images/hotel/hotel7.jpg";
-import HotelImage8 from "../../assets/images/hotel/hotel8.jpg";
-import HotelImage9 from "../../assets/images/hotel/hotel9.jpg";
-import HotelImage10 from "../../assets/images/hotel/hotel10.jpg";
-import HotelImage11 from "../../assets/images/hotel/hotel11.jpg";
-import HotelImage12 from "../../assets/images/hotel/hotel12.jpg";
+import HotelImage1 from "../../../assets/images/hotel/hotel1.jpg";
+import HotelImage2 from "../../../assets/images/hotel/hotel2.jpg";
+import HotelImage3 from "../../../assets/images/hotel/hotel3.jpg";
+import HotelImage4 from "../../../assets/images/hotel/hotel4.jpg";
+import HotelImage5 from "../../../assets/images/hotel/hotel5.jpg";
+import HotelImage6 from "../../../assets/images/hotel/hotel6.jpg";
+import HotelImage7 from "../../../assets/images/hotel/hotel7.jpg";
+import HotelImage8 from "../../../assets/images/hotel/hotel8.jpg";
+import HotelImage9 from "../../../assets/images/hotel/hotel9.jpg";
+import HotelImage10 from "../../../assets/images/hotel/hotel10.jpg";
+import HotelImage11 from "../../../assets/images/hotel/hotel11.jpg";
+import HotelImage12 from "../../../assets/images/hotel/hotel12.jpg";
 
 import { Col, Row } from "react-bootstrap";
-import HotelCard from "../../components/hotel-card/hotel-card";
+import HotelCard from "../../../components/hotel-card/hotel-card";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useState } from "react";
 

@@ -2,13 +2,13 @@ import "./App.scss";
 
 import { Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
-import Header from "./components/header/header";
-import Footer from "./components/footer/footer";
+import Header from "./layouts/header/header";
+import Footer from "./layouts/footer/footer";
 import Navbar from "./components/navbar/navbar";
-import Home from "./routes/home/home";
-import Signin from "./routes/signin/signin";
-import Signup from "./routes/signup/signup";
-import HotelDetail from "./components/hotel-detail/hotel-detail";
+import Signin from "./pages/signin/signin";
+import Signup from "./pages/signup/signup";
+import HotelierRoutes from "./routes/hotelierRoutes";
+import CustomerRoutes from "./routes/customerRoutes";
 
 const App = () => {
    return (
@@ -18,14 +18,16 @@ const App = () => {
             <Header />
             <main>
                <Container
-                  // className="d-flex justify-content-center"
                   style={{ maxWidth: "100%", paddingLeft: 0, paddingRight: 0 }}
                >
                   <Routes>
-                     <Route path="/" element={<Home />} />
                      <Route path="/signin" element={<Signin />} />
                      <Route path="/signup" element={<Signup />} />
-                     <Route path="/hotel/:id" element={<HotelDetail />} />
+                     <Route path="/customer/*" element={<CustomerRoutes />}></Route>
+                     <Route
+                        path="/hotelier/*"
+                        element={<HotelierRoutes />}
+                     ></Route>
                   </Routes>
                </Container>
             </main>

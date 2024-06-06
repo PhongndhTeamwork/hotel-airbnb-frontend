@@ -14,14 +14,14 @@ const Header = () => {
             <div className="header-list">
                <div className="header-list__item">
                   <FontAwesomeIcon icon={faHome} />
-                  <Link to="/">Home</Link>
+                  <Link to="/customer/">Home</Link>
                </div>
                <div className="header-list__item">
                   <FontAwesomeIcon
                      icon={faInfoCircle}
                      className="header-list__icon"
                   />
-                  <Link to="">About</Link>
+                  <Link to="/hotelier/hotels">Hotelier</Link>
                </div>
                <div className="header-list__item">
                   <FontAwesomeIcon

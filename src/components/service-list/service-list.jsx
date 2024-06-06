@@ -1,4 +1,4 @@
-import "./service.scss";
+import "./service-list.scss";
 import BreakfastIcon from "../../assets/icons/breakfast.png";
 import CaveIcon from "../../assets/icons/cave.png";
 import GolfIcon from "../../assets/icons/golf.png";
@@ -25,7 +25,7 @@ import RightChevronIcon from "../../assets/icons/right-chevron.png";
 import LeftChevronIcon from "../../assets/icons/left-chevron.png";
 import { useEffect, useRef, useState } from "react";
 
-const Service = () => {
+const ServiceList = () => {
    const services = [
       {
          name: "Breakfast",
@@ -221,4 +221,4 @@ const Service = () => {
    );
 };
 
-export default Service;
+export default ServiceList;

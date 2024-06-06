@@ -46,3 +46,9 @@
 :root {
   --suitable-padding: 3rem;
 }
+
+button{
+  &:active{
+    opacity: 0.9!important;
+  }
+}

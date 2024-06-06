@@ -1,0 +1,28 @@
+.hotelier-hotels {
+   padding: var(--suitable-padding);
+
+   .hotelier-hotels__card {
+      &:hover{
+         opacity: 0.95;
+         cursor: pointer;
+      }
+   
+      &:active{
+         opacity: 0.9;
+      }
+      img{
+         border-top-left-radius: 0.5rem;
+         border-top-right-radius: 0.5rem;
+      }
+
+      .hotelier-hotels__name {
+         padding: 1rem;
+         background-color: black;
+         color: white;
+         border-bottom-left-radius: 0.5rem;
+         border-bottom-right-radius: 0.5rem;
+      }
+   }
+
+   
+}
