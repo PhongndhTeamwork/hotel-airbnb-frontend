@@ -5,6 +5,7 @@ import { Container } from "react-bootstrap";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import Navbar from "./components/navbar/navbar";
+import OrderCard from "./components/order-card/order-card";
 import Home from "./routes/home/home";
 
 
@@ -14,6 +15,7 @@ const App = () => {
          <div className="App">
             <Navbar />
             <Header />
+            <OrderCard />
             <main>
                <Container
                   // className="d-flex justify-content-center"
