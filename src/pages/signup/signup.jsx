@@ -18,6 +18,7 @@ import {
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { Image, Row, Col, Button } from "react-bootstrap";
 import { useState } from "react";
+import axios from "axios";
 
 const Signup = () => {
    const [showPassword, setShowPassword] = useState(false);
@@ -35,6 +36,80 @@ const Signup = () => {
       event.preventDefault();
    };
 
+   //? Signup logic
+   const [isSignupAsHotelier, setIsSignupAsHotelier] = useState(false);
+   const [userInfo, setUserInfo] = useState({
+      name: "",
+      phoneNumber: "",
+      password: "",
+   });
+   const [confirmPassword, setConfirmPassword] = useState("");
+   const [error, setError] = useState({
+      name: "",
+      phoneNumber: "",
+      password: "",
+      confirmPassword: "",
+   });
+
+   const handleSignup = () => {
+      let isError = false;
+      if (userInfo.name === "") {
+         setError({ ...error, name: "Please enter your username" });
+         isError = true;
+      }
+      if (userInfo.phoneNumber === "") {
+         setError({ ...error, phoneNumber: "Please enter your phone number" });
+         isError = true;
+      }
+      if (userInfo.password === "") {
+         setError({ ...error, password: "Please enter your password" });
+         isError = true;
+      }
+      if (confirmPassword === "") {
+         setError({
+            ...error,
+            confirmPassword: "Please enter your password confirmation",
+         });
+         isError = true;
+      } else if (confirmPassword !== userInfo.password) {
+         setError({
+            ...error,
+            confirmPassword: "Password is not match",
+         });
+      }
+      if (isError) return;
+      setError({
+         name: "",
+         phoneNumber: "",
+         password: "",
+         confirmPassword: "",
+      });
+      axios
+         .post(
+            `${
+               isSignupAsHotelier
+                  ? "/signup-as-hotelier"
+                  : "/signup-as-customer"
+            }`,
+            {
+               name: userInfo.name,
+               phone_number: userInfo.phoneNumber,
+               password: userInfo.password,
+               confirmPassword: userInfo.confirmPassword,
+            }
+         )
+         .then(({ data }) => {
+            if (data === "Phone number is duplicated") {
+               setError({
+                  ...error,
+                  phoneNumber: "Phone number is duplicated",
+               });
+            }
+            console.log(data);
+         })
+         .catch(() => console.log);
+   };
+
    return (
       <div className="signup">
          <Row>
@@ -48,12 +123,24 @@ const Signup = () => {
                      label="Phone Number"
                      variant="outlined"
                      className="signup__input"
+                     onChange={(e) => {
+                        setUserInfo({
+                           ...userInfo,
+                           phoneNumber: e.target.value,
+                        });
+                     }}
                   />
                   <TextField
                      id="outlined-basic"
                      label="Name"
                      variant="outlined"
                      className="signup__input"
+                     onChange={(e) => {
+                        setUserInfo({
+                           ...userInfo,
+                           name: e.target.value,
+                        });
+                     }}
                   />
                   <FormControl
                      sx={{ m: 1, width: "25ch" }}
@@ -66,6 +153,12 @@ const Signup = () => {
                      <OutlinedInput
                         id="outlined-adornment-password"
                         type={showPassword ? "text" : "password"}
+                        onChange={(e) => {
+                           setUserInfo({
+                              ...userInfo,
+                              password: e.target.value,
+                           });
+                        }}
                         endAdornment={
                            <InputAdornment position="end">
                               <IconButton
@@ -96,6 +189,9 @@ const Signup = () => {
                      <OutlinedInput
                         id="outlined-adornment-password"
                         type={showConfirmPassword ? "text" : "password"}
+                        onChange={(e) => {
+                           setConfirmPassword(e.target.value);
+                        }}
                         endAdornment={
                            <InputAdornment position="end">
                               <IconButton
@@ -115,9 +211,21 @@ const Signup = () => {
                         label="Password"
                      />
                   </FormControl>
+                  <div>
+                     <input
+                        type="checkbox"
+                        id="id-hotelier"
+                        onChange={(e) => {
+                           setIsSignupAsHotelier(e.target.checked);
+                        }}
+                     />
+                     <label for="id-hotelier"> &nbsp;Sign up as hotelier</label>
+                  </div>
                </div>
-
-               <div className="signup__submit-button mt-2">
+               <div
+                  className="signup__submit-button mt-4"
+                  onClick={handleSignup}
+               >
                   <Button variant="success">Sign up</Button>
                </div>
                <div className="signup__line mt-5">

@@ -4,26 +4,27 @@ import { Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import Header from "./layouts/header/header";
 import Footer from "./layouts/footer/footer";
-import Navbar from "./components/navbar/navbar";
+import Navbar from "./layouts/navbar/navbar";
 import Signin from "./pages/signin/signin";
 import Signup from "./pages/signup/signup";
 import HotelierRoutes from "./routes/hotelierRoutes";
 import CustomerRoutes from "./routes/customerRoutes";
+import AdminRoutes from "./routes/adminRoutes";
 
 const App = () => {
    return (
       <div className="App">
          <div className="App">
-            <Navbar />
             <Header />
             <main>
                <Container
-                  style={{ maxWidth: "100%", paddingLeft: 0, paddingRight: 0 }}
+                  style={{ maxWidth: "100%", paddingLeft: 0, paddingRight: 0, marginTop: "7rem"}}
                >
                   <Routes>
                      <Route path="/signin" element={<Signin />} />
                      <Route path="/signup" element={<Signup />} />
-                     <Route path="/customer/*" element={<CustomerRoutes />}></Route>
+                     <Route path="/*" element={<CustomerRoutes />}></Route>
+                     <Route path="/admin/*" element={<AdminRoutes />}></Route>
                      <Route
                         path="/hotelier/*"
                         element={<HotelierRoutes />}

@@ -1,8 +1,9 @@
 import "./signin.scss";
 import SigninImage from "../../assets/images/tourist1.jpg";
-import Logo1 from "../../assets/logos/logo1.png";
-import Logo3 from "../../assets/logos/logo3.png";
+// import Logo1 from "../../assets/logos/logo1.png";
+// import Logo3 from "../../assets/logos/logo3.png";
 import Logo4 from "../../assets/logos/logo4.png";
+import { Spinner } from "react-bootstrap";
 
 import FacebookIcon from "../../assets/icons/facebook.png";
 import GoogleIcon from "../../assets/icons/google.png";
@@ -17,9 +18,21 @@ import {
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { Image, Row, Col, Button } from "react-bootstrap";
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../services/features/userLoginSlice";
 
 const Signin = () => {
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
+   const {
+      error: errorMessage,
+      loading,
+      userInformation,
+   } = useSelector((state) => state.userLogin);
+
    const [showPassword, setShowPassword] = useState(false);
 
    const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -27,6 +40,54 @@ const Signin = () => {
    const handleMouseDownPassword = (event) => {
       event.preventDefault();
    };
+
+   //? Signin logic
+   const [userInfo, setUserInfo] = useState({
+      phoneNumber: "",
+      password: "",
+   });
+   const [error, setError] = useState({
+      phoneNumber: "",
+      password: "",
+   });
+
+   const handleSignin = () => {
+      let isError = false;
+      if (userInfo.phoneNumber === "") {
+         setError({ ...error, phoneNumber: "Please enter your phone number" });
+         isError = true;
+      }
+      if (userInfo.password === "") {
+         setError({ ...error, password: "Please enter your password" });
+         isError = true;
+      }
+      if (isError) return;
+      setError({
+         name: "",
+         phoneNumber: "",
+         password: "",
+         confirmPassword: "",
+      });
+      // axios
+      //    .post("/signin", {
+      //       phone_number: userInfo.phoneNumber,
+      //       password: userInfo.password,
+      //    })
+      //    .then(({ data }) => {
+      //       console.log(data);
+      //    })
+      //    .catch(() => console.log);
+      dispatch(
+         login({
+            phone_number: userInfo.phoneNumber,
+            password: userInfo.password,
+         })
+      );
+   };
+
+   useEffect(() => {
+      if (userInformation !== null) navigate("/");
+   }, [userInformation, navigate]);
 
    return (
       <div className="signin">
@@ -53,6 +114,12 @@ const Signin = () => {
                      label="Phone Number"
                      variant="outlined"
                      className="signin__input"
+                     onChange={(e) => {
+                        setUserInfo({
+                           ...userInfo,
+                           phoneNumber: e.target.value,
+                        });
+                     }}
                   />
                   <FormControl
                      sx={{ m: 1, width: "25ch" }}
@@ -65,6 +132,12 @@ const Signin = () => {
                      <OutlinedInput
                         id="outlined-adornment-password"
                         type={showPassword ? "text" : "password"}
+                        onChange={(e) => {
+                           setUserInfo({
+                              ...userInfo,
+                              password: e.target.value,
+                           });
+                        }}
                         endAdornment={
                            <InputAdornment position="end">
                               <IconButton
@@ -85,8 +158,26 @@ const Signin = () => {
                      />
                   </FormControl>
                </div>
-               <div className="signin__submit-button mt-2">
-                  <Button variant="success">Sign in</Button>
+
+               <div
+                  className="signin__submit-button mt-2 d-flex justify-content-center"
+                  onClick={handleSignin}
+               >
+                  <Button
+                     variant="success"
+                     className="d-flex align-items-center justify-content-center"
+                  >
+                     {/* {loading && (
+                        <Fragment>
+                           <Spinner
+                              style={{ width: "20px", height: "20px" }}
+                           ></Spinner>
+                           &nbsp;
+                           &nbsp;
+                        </Fragment>
+                     )} */}
+                     Sign in
+                  </Button>
                </div>
                <div className="signin__line mt-5">
                   <p>Or Continue With</p>

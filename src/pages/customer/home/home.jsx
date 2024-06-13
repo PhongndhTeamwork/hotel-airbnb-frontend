@@ -16,123 +16,125 @@ import { Col, Row } from "react-bootstrap";
 import HotelCard from "../../../components/hotel-card/hotel-card";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useState } from "react";
-
+import SearchBar from "../../../components/search-bar/search-bar";
+const hotels = [
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage1, HotelImage11, HotelImage12],
+      minPrice: 40,
+      maxPrice: 300,
+      rating: 4.5,
+   },
+   {
+      name: "Sunt in culpa qui officia",
+      description:
+         "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, ",
+      images: [HotelImage2, HotelImage3, HotelImage7],
+      minPrice: 80,
+      maxPrice: 280,
+      rating: 4.9,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage3, HotelImage11, HotelImage6],
+      minPrice: 90,
+      maxPrice: 900,
+      rating: 4.1,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage4, HotelImage12, HotelImage4],
+      minPrice: 60,
+      maxPrice: 200,
+      rating: 4.2,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage5, HotelImage10, HotelImage9],
+      minPrice: 45,
+      maxPrice: 310,
+      rating: 4.78,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage6, HotelImage11, HotelImage2],
+      minPrice: 120,
+      maxPrice: 200,
+      rating: 4.56,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage7, HotelImage9, HotelImage1],
+      minPrice: 80,
+      maxPrice: 400,
+      rating: 3.94,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage8, HotelImage2, HotelImage4],
+      minPrice: 50,
+      maxPrice: 375,
+      rating: 4.65,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage9, HotelImage5, HotelImage3],
+      minPrice: 90,
+      maxPrice: 375,
+      rating: 4.95,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage10, HotelImage12, HotelImage6],
+      minPrice: 60,
+      maxPrice: 315,
+      rating: 4.25,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage11, HotelImage5, HotelImage9],
+      minPrice: 90,
+      maxPrice: 275,
+      rating: 4.82,
+   },
+   {
+      name: "Consectetur adipiscing elit",
+      description:
+         "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      images: [HotelImage12, HotelImage3, HotelImage8],
+      minPrice: 40,
+      maxPrice: 685,
+      rating: 4.15,
+   },
+];
 const Home = () => {
-   const hotels = [
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage1, HotelImage11, HotelImage12],
-         minPrice: 40,
-         maxPrice: 300,
-         rating: 4.5,
-      },
-      {
-         name: "Sunt in culpa qui officia",
-         description:
-            "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, ",
-         images: [HotelImage2, HotelImage3, HotelImage7],
-         minPrice: 80,
-         maxPrice: 280,
-         rating: 4.9,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage3, HotelImage11, HotelImage6],
-         minPrice: 90,
-         maxPrice: 900,
-         rating: 4.1,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage4, HotelImage12, HotelImage4],
-         minPrice: 60,
-         maxPrice: 200,
-         rating: 4.2,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage5, HotelImage10, HotelImage9],
-         minPrice: 45,
-         maxPrice: 310,
-         rating: 4.78,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage6, HotelImage11, HotelImage2],
-         minPrice: 120,
-         maxPrice: 200,
-         rating: 4.56,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage7, HotelImage9, HotelImage1],
-         minPrice: 80,
-         maxPrice: 400,
-         rating: 3.94,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage8, HotelImage2, HotelImage4],
-         minPrice: 50,
-         maxPrice: 375,
-         rating: 4.65,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage9, HotelImage5, HotelImage3],
-         minPrice: 90,
-         maxPrice: 375,
-         rating: 4.95,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage10, HotelImage12, HotelImage6],
-         minPrice: 60,
-         maxPrice: 315,
-         rating: 4.25,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage11, HotelImage5, HotelImage9],
-         minPrice: 90,
-         maxPrice: 275,
-         rating: 4.82,
-      },
-      {
-         name: "Consectetur adipiscing elit",
-         description:
-            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-         images: [HotelImage12, HotelImage3, HotelImage8],
-         minPrice: 40,
-         maxPrice: 685,
-         rating: 4.15,
-      },
-   ];
-
    const [page, setPage] = useState(1);
 
    return (
       <div className="home">
+         <div className="home__search-bar d-flex justify-content-center">
+            <SearchBar />
+         </div>
          <Row>
             {hotels.map((hotel, hotelIndex) => (
                <Col

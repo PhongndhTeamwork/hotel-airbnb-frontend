@@ -1,10 +1,15 @@
 .home {
-   padding: var(--suitable-padding);
+   padding: 0 var(--suitable-padding);
+   ;
 
    // .row>* {
    //    padding-right: calc(var(--bs-gutter-x)* 0.75);
    //    padding-left: calc(var(--bs-gutter-x)* 0.75);
    // }
+   .home__search-bar{
+      opacity: 15;
+      margin-bottom: 3rem;
+   }
    .home__hotel-card {
       transition: transform 0.5s ease;
       &:hover {

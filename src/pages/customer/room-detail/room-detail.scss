@@ -1,0 +1,47 @@
+.room-detail {
+   padding: var(--suitable-padding);
+
+   .room-details__main-image{
+      img{
+         margin : 0.25rem;
+         border-radius: 0.25rem;
+      }
+   }
+   .room-detail__images {
+      // background-color: rgba(0, 0, 0,0.5);
+      border-radius: 0.25rem;
+      padding: 0 6rem;
+
+      .room-detail__chevron {
+         &:hover {
+            cursor: pointer;
+            opacity: 0.9;
+         }
+
+         &:active {
+            opacity: 0.85;
+         }
+      }
+
+      .room-detail__images-list-wrap {
+         width: 100%;
+         overflow: hidden;
+
+         .room-detail__images-list {
+            transition: transform 0.5s ease;
+         }
+
+
+
+      }
+
+      img{
+         border: 1px solid white;
+         &:hover{
+            cursor: pointer;
+            opacity: 0.95;
+         }
+      }
+
+   }
+}

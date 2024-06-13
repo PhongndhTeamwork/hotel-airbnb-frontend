@@ -79,7 +79,7 @@ const RoomCard = ({ room }) => {
                   xxl={8}
                   className="room-card__body"
                   onClick={() => {
-                     navigate("/customer/room/1");
+                     navigate("/room/1");
                   }}
                >
                   <div className="room-card__name one-line-restrict">

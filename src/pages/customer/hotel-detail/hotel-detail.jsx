@@ -228,13 +228,13 @@ const HotelDetail = () => {
                      <h4 className="text-start">What this place offers</h4>
                      <Row>
                         <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-                           {amenities.slice(0, 4).map((amenity) => (
-                              <Amenity name={amenity} />
+                           {amenities.slice(0, 4).map((amenity, index) => (
+                              <Amenity key={index} name={amenity} />
                            ))}
                         </Col>
                         <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-                           {amenities.slice(4, 8).map((amenity) => (
-                              <Amenity name={amenity} />
+                           {amenities.slice(4, 8).map((amenity, index) => (
+                              <Amenity key={index} name={amenity} />
                            ))}
                         </Col>
                      </Row>

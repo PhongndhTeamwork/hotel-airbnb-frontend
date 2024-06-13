@@ -1,8 +1,8 @@
-.room-edition {
+.hotel-addition {
    padding: var(--suitable-padding);
    margin-bottom: 4rem;
 
-   .room-edition__form {
+   .hotel-addition__form {
       width: 70%;
       margin: 0 auto;
       padding: 4rem;
@@ -10,12 +10,14 @@
       border-radius: 0.5rem;
    }
 
-   .room-edition__selector {
-      // .css-t3ipsp-control {
-      //    box-shadow: none;
-      //    border: 2px solid var(--blue-color);
-      //    line-height: 1rem;
-      // }
+   // .hotel-addition_location {}
+
+   .hotel-addition__selector {
+      .css-t3ipsp-control {
+         // box-shadow: none;
+         // border: 2px solid var(--blue-color);
+         // line-height: 1rem;
+      }
 
       .css-1fdsijx-ValueContainer {
          display: flex;
@@ -28,7 +30,7 @@
       }
    }
 
-   .room-edition__image-button{
+   .hotel-addition__image-button{
       button{
          min-width: 15rem;
       }
@@ -38,7 +40,7 @@
       }
    }
 
-   .room-edition__image{
+   .hotel-addition__image{
       img{
          aspect-ratio: 1/1;
       }

@@ -1,13 +1,13 @@
 import React from "react";
 import "./navbar.scss";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-   faHome,
-   faInfoCircle,
-   faTools,
-   faEnvelope,
-} from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import {
+//    faHome,
+//    faInfoCircle,
+//    faTools,
+//    faEnvelope,
+// } from "@fortawesome/free-solid-svg-icons";
 const Navbar = () => {
    return (
       <div className="navbar">

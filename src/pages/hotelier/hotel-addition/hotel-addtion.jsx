@@ -1,6 +1,5 @@
-import { useParams } from "react-router-dom";
-import "./room-edition.scss";
 import { useState } from "react";
+import "./hotel-addition.scss";
 import { Button, TextField } from "@mui/material/";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -152,8 +151,8 @@ const services = [
    },
 ];
 
-const RoomEdition = () => {
-   const { id } = useParams();
+const HotelAddition = () => {
+   const [location, setLocation] = useState("");
 
    const [numberOfImage, setNumberOfImage] = useState(3);
    const [images, setImages] = useState([]);
@@ -176,10 +175,10 @@ const RoomEdition = () => {
    };
 
    return (
-      <div className="room-edition">
-         <div className="room-edition__form">
-            <h3>Add New Room</h3>
-            <div className="room-edition__form-row my-4 w-100">
+      <div className="hotel-addition">
+         <div className="hotel-addition__form">
+            <h3>Add New Hotel</h3>
+            <div className="hotel-addition__form-row my-4 w-100">
                <TextField
                   // id="outlined-basic"
                   label="Name"
@@ -188,7 +187,7 @@ const RoomEdition = () => {
                   size="small"
                />
             </div>
-            <div className="room-edition__form-row my-4 w-100">
+            <div className="hotel-addition__form-row my-4 w-100">
                <TextField
                   label="Description"
                   variant="outlined"
@@ -198,28 +197,36 @@ const RoomEdition = () => {
                   size="small"
                />
             </div>
-            <div className="room-edition__form-row my-4 w-100">
+            <div className="hotel-addition__form-row my-4 w-100">
                <TextField
-                  label="Description"
+                  label="Address"
                   variant="outlined"
-                  multiline
                   className="w-100"
-                  rows={4}
                   size="small"
                />
             </div>
-            <div className="room-edition__form-row my-4 w-100">
-               <Select
-                  className="room-edition__selector"
-                  classNamePrefix="select"
-                  name="type"
-                  options={[{ label: "single", value: "single" }]}
-                  placeholder="Select type..."
+            <div className="hotel-addition__form-row hotel-addition_location my-4 w-100">
+               <TextField
+                  label="Location"
+                  variant="outlined"
+                  className="w-100"
+                  size="small"
+                  // multiline
+                  // rows={4}
+                  onChange={(e) => {
+                     setLocation(e.target.value);
+                  }}
                />
+               {location.includes("iframe") && (
+                  <div
+                     className="w-50 my-3"
+                     dangerouslySetInnerHTML={{ __html: location }}
+                  ></div>
+               )}
             </div>
-            <div className="room-edition__form-row my-4 w-100">
+            <div className="hotel-addition__form-row my-4 w-100">
                <Select
-                  className="room-edition__selector"
+                  className="hotel-addition__selector"
                   closeMenuOnSelect={false}
                   components={animatedComponents}
                   // defaultValue={}
@@ -228,8 +235,19 @@ const RoomEdition = () => {
                   placeholder="Select services..."
                />
             </div>
-            <div className="room-edition__form-row my-4 w-100">
-               <div className="d-flex room-edition__image-button">
+            <div className="hotel-addition__form-row my-4 w-100">
+               <Select
+                  className="hotel-addition__selector"
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  // defaultValue={}
+                  isMulti
+                  options={services}
+                  placeholder="Select services..."
+               />
+            </div>
+            <div className="hotel-addition__form-row my-4 w-100">
+               <div className="d-flex hotel-addition__image-button">
                   <Button
                      variant="outlined"
                      color="success"
@@ -265,7 +283,7 @@ const RoomEdition = () => {
                   .map((_, index) => (
                      <div className="mt-4">
                         <div
-                           className="room-edition__image-input d-flex justify-content-start"
+                           className="hotel-addition__image-input d-flex justify-content-start"
                            key={index}
                         >
                            <Button variant="contained" component="label">
@@ -291,19 +309,17 @@ const RoomEdition = () => {
                            />
                         </div>
                         {images[index]?.image && (
-                           <div className="room-edition__image w-50 mt-3">
+                           <div className="hotel-addition__image w-50 mt-3">
                               <Image src={images[index]?.image} width="100%" />
                            </div>
                         )}
                      </div>
                   ))}
             </div>
-            <Button variant="contained" color="secondary" className="mt-4">
-               Submit
-            </Button>
+            <Button variant="contained" color="secondary" className="mt-4">Submit</Button>
          </div>
       </div>
    );
 };
 
-export default RoomEdition;
+export default HotelAddition;

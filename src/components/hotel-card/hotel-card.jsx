@@ -21,7 +21,7 @@ const HotelCard = ({ hotel }) => {
                      ) &&
                      !e.target.className.includes("carousel-control-prev-icon")
                   ) {
-                     navigate("/customer/hotel/1");
+                     navigate("/hotel/1");
                   }
                }}
             >

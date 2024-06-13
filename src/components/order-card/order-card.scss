@@ -1,0 +1,122 @@
+.order-card {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   width: 300px;
+   border: 1px solid black;
+   border-radius: 5px;
+   box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1);
+
+   .card-header {
+      align-items: baseline;
+      margin: 20px;
+      margin-top: 10px;
+      display: flex;
+
+      .price {
+         font-size: 24px;
+         font-weight: bold;
+      }
+   }
+
+   // .car-info-container{
+   .card-info {
+      border: 1px solid gray;
+      display: flex;
+      flex-direction: column;
+      width: 250px;
+      border-radius: 5px;
+      margin: auto;
+
+      .card-info__hr {
+         margin-top: 5px;
+         margin-bottom: 5px;
+         /* Adjust the margin around the element */
+      }
+
+      .card-info__item {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         gap: 10px;
+
+      }
+
+      .card-info__text {
+         color: black;
+         cursor: pointer;
+
+      }
+
+      .date {
+         border: 1px solid gray;
+         position: absolute;
+         top: 360px;
+      }
+
+      .options {
+         position: absolute;
+         top: 360px;
+         border: 1px solid gray;
+         background-color: white;
+         color: gray;
+         border-radius: 5px;
+
+         .option-item {
+            width: 200px;
+            display: flex;
+            justify-content: space-between;
+            margin: 10px;
+         }
+
+         .option-counter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12;
+            color: black;
+         }
+
+      }
+   }
+
+   // }
+
+
+
+   .card-btn {
+      margin: 20px;
+      margin-bottom: 10px;
+      padding: 5px 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4caf50;
+      color: #fff;
+      cursor: pointer;
+   }
+
+   .card-btn:hover {
+      background-color: #45a049;
+   }
+
+   .total-hr {
+      margin: 20px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+   }
+
+   .order-sub-total,
+   .order-total {
+      margin: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      align-items: baseline;
+   }
+
+   .total-label {
+      font-size: 16px;
+      font-weight: 600;
+   }
+}

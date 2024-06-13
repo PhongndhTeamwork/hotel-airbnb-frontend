@@ -6,15 +6,58 @@ import {
    faTools,
    faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Image } from "react-bootstrap";
+import Logo1 from "../../assets/logos/logo4.png";
+import { PersonCircle, List } from "react-bootstrap-icons";
+import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../services/features/userLoginSlice";
+
 const Header = () => {
+   const [isOpenDropdown, setIsOpenDropdown] = useState();
+   const [isActive, setIsActive] = useState(false);
+   const {
+      error: errorMessage,
+      loading,
+      userInformation,
+   } = useSelector((state) => state.userLogin);
+
+   const navigate = useNavigate();
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      const handleScroll = () => {
+         if (window.scrollY > 0) {
+            setIsActive(true);
+         } else {
+            setIsActive(false);
+         }
+      };
+
+      window.addEventListener("scroll", handleScroll);
+
+      // Cleanup the event listener on component unmount
+      return () => {
+         window.removeEventListener("scroll", handleScroll);
+      };
+   }, []);
+
    return (
-      <div className="header">
+      <div className={`header ${isActive ? "active" : ""}`}>
          <div className="header-container">
+            <div
+               className="header-logo"
+               onClick={() => {
+                  navigate("/");
+               }}
+            >
+               <Image src={Logo1} width="70px" />
+            </div>
             <div className="header-list">
                <div className="header-list__item">
                   <FontAwesomeIcon icon={faHome} />
-                  <Link to="/customer/">Home</Link>
+                  <Link to="/">Home</Link>
                </div>
                <div className="header-list__item">
                   <FontAwesomeIcon
@@ -28,7 +71,7 @@ const Header = () => {
                      icon={faTools}
                      className="header-list__icon"
                   />
-                  <Link to="">Services</Link>
+                  <Link to="/admin/user-list">Admin</Link>
                </div>
                <div className="header-list__item">
                   <FontAwesomeIcon
@@ -38,11 +81,84 @@ const Header = () => {
                   <Link to="#contact">Contact</Link>
                </div>
             </div>
-            <h1 className="header-title">A lifetime of discount?</h1>
-            <p className="header-desc">Book right now || be gay</p>
-            {/* <Link to="/signin">
-               <button className="header-btn">Sign in / Register</button>
-            </Link> */}
+            <div className="header-auth">
+               <List
+                  size="30px"
+                  className="header-auth__list"
+                  onClick={() => {
+                     setIsOpenDropdown(!isOpenDropdown);
+                  }}
+               />
+               <PersonCircle size="30px" />
+            </div>
+            <div
+               className="header__dropdown"
+               style={{ visibility: isOpenDropdown ? "visible" : "hidden" }}
+            >
+               {!userInformation && (
+                  <Fragment>
+                     <p
+                        style={{
+                           borderTopLeftRadius: "0.25rem",
+                           borderTopRightRadius: "0.25rem",
+                        }}
+                        onClick={() => {
+                           navigate("/signin");
+                           setIsOpenDropdown(false);
+                        }}
+                     >
+                        Sign in
+                     </p>
+                     <p
+                        onClick={() => {
+                           navigate("/signup");
+                           setIsOpenDropdown(false);
+                        }}
+                     >
+                        Sign up
+                     </p>
+                  </Fragment>
+               )}
+               {userInformation && (
+                  <Fragment>
+                     <p
+                        style={{
+                           borderBottomLeftRadius: "0.25rem",
+                           borderBottomRightRadius: "0.25rem",
+                        }}
+                        onClick={() => {
+                           setIsOpenDropdown(false);
+                        }}
+                     >
+                        Profile
+                     </p>
+                     <p
+                        style={{
+                           borderBottomLeftRadius: "0.25rem",
+                           borderBottomRightRadius: "0.25rem",
+                        }}
+                        onClick={() => {
+                           setIsOpenDropdown(false);
+                        }}
+                     >
+                        History
+                     </p>
+                     <p
+                        style={{
+                           borderBottomLeftRadius: "0.25rem",
+                           borderBottomRightRadius: "0.25rem",
+                        }}
+                        onClick={async () => {
+                           setIsOpenDropdown(false);
+                           await dispatch(logout());
+                           navigate("/");
+                        }}
+                     >
+                        Log out
+                     </p>
+                  </Fragment>
+               )}
+            </div>
          </div>
       </div>
    );
