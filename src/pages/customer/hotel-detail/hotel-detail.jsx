@@ -1,7 +1,7 @@
 import "./hotel-detail.scss";
 
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Row, Col, Image, Button } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 
@@ -19,14 +19,12 @@ import RoomImage11 from "../../../assets/images/room/room11.jpg";
 import RoomImage12 from "../../../assets/images/room/room12.jpg";
 import AvatarImage from "../../../assets/images/tourist2.jpg";
 
-
 import ServiceList from "../../../components/service-list/service-list";
 import RoomCard from "../../../components/room-card/room-card";
 
 import { Avatar } from "@mui/material";
 import Amenity from "../../../components/amenity/amenity";
-
-
+import axios from "axios";
 
 const HotelDetail = () => {
    const { id } = useParams();
@@ -125,6 +123,17 @@ const HotelDetail = () => {
    ];
 
    const [page, setPage] = useState(1);
+
+   const [hotel, setHotel] = useState({});
+
+   useEffect(() => {
+      axios
+         .get("/get-hotel-as-customer")
+         .then(({ data }) => {})
+         .then((error) => {
+            console.error(error);
+         });
+   }, []);
 
    return (
       <div className="hotel-detail">

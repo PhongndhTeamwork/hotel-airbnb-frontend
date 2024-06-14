@@ -15,9 +15,11 @@ import HotelImage12 from "../../../assets/images/hotel/hotel12.jpg";
 import { Col, Row } from "react-bootstrap";
 import HotelCard from "../../../components/hotel-card/hotel-card";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "../../../components/search-bar/search-bar";
-const hotels = [
+import axios from "axios";
+
+const hotelInfos = [
    {
       name: "Consectetur adipiscing elit",
       description:
@@ -130,13 +132,24 @@ const hotels = [
 const Home = () => {
    const [page, setPage] = useState(1);
 
+   const [hotels, setHotels] = useState([]);
+
+   useEffect(() => {
+      axios
+         .get("/get-hotel-as-customer")
+         .then(({ data }) => {})
+         .then((error) => {
+            console.error(error);
+         });
+   }, []);
+
    return (
       <div className="home">
          <div className="home__search-bar d-flex justify-content-center">
             <SearchBar />
          </div>
          <Row>
-            {hotels.map((hotel, hotelIndex) => (
+            {hotelInfos.map((hotel, hotelIndex) => (
                <Col
                   xs={12}
                   sm={12}

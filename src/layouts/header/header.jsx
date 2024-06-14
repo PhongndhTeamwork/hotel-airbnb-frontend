@@ -54,25 +54,33 @@ const Header = () => {
             >
                <Image src={Logo1} width="70px" />
             </div>
+
             <div className="header-list">
-               <div className="header-list__item">
-                  <FontAwesomeIcon icon={faHome} />
-                  <Link to="/">Home</Link>
-               </div>
-               <div className="header-list__item">
-                  <FontAwesomeIcon
-                     icon={faInfoCircle}
-                     className="header-list__icon"
-                  />
-                  <Link to="/hotelier/hotels">Hotelier</Link>
-               </div>
-               <div className="header-list__item">
-                  <FontAwesomeIcon
-                     icon={faTools}
-                     className="header-list__icon"
-                  />
-                  <Link to="/admin/user-list">Admin</Link>
-               </div>
+               {userInformation.role === 0 && (
+                  <div className="header-list__item">
+                     <FontAwesomeIcon icon={faHome} />
+                     <Link to="/">Home</Link>
+                  </div>
+               )}
+               {userInformation.role === 1 && (
+                  <div className="header-list__item">
+                     <FontAwesomeIcon
+                        icon={faInfoCircle}
+                        className="header-list__icon"
+                     />
+                     <Link to="/hotelier/hotels">Hotelier</Link>
+                  </div>
+               )}
+               {userInformation.role === 2 && (
+                  <div className="header-list__item">
+                     <FontAwesomeIcon
+                        icon={faTools}
+                        className="header-list__icon"
+                     />
+                     <Link to="/admin/user-list">Admin</Link>
+                  </div>
+               )}
+
                <div className="header-list__item">
                   <FontAwesomeIcon
                      icon={faEnvelope}
@@ -89,7 +97,7 @@ const Header = () => {
                      setIsOpenDropdown(!isOpenDropdown);
                   }}
                />
-               <PersonCircle size="30px" fill="grey"/>
+               <PersonCircle size="30px" fill="grey" />
             </div>
             <div
                className="header__dropdown"

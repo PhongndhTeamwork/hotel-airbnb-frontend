@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./hotel-addition.scss";
 import { Button, TextField } from "@mui/material/";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { PlusCircle, DashCircle } from "react-bootstrap-icons";
 import { Image } from "react-bootstrap";
+import axios from "axios";
 
 const animatedComponents = makeAnimated();
 
@@ -153,6 +154,17 @@ const services = [
 
 const HotelAddition = () => {
    const [location, setLocation] = useState("");
+
+   const [newHotel, setNewHotel] = useState({});
+
+   // useEffect(() => {
+   //    axios
+   //       .get("/get-hotel-as-customer")
+   //       .then(({ data }) => {})
+   //       .then((error) => {
+   //          console.error(error);
+   //       });
+   // }, []);
 
    const [numberOfImage, setNumberOfImage] = useState(3);
    const [images, setImages] = useState([]);

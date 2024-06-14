@@ -16,10 +16,11 @@ import RoomImage11 from "../../../assets/images/room/room11.jpg";
 import RoomImage12 from "../../../assets/images/room/room12.jpg";
 import { useEffect, useRef, useState } from "react";
 import { ChevronRight, ChevronLeft } from "react-bootstrap-icons";
+import axios from "axios";
 
 import OrderCard from "../../../components/order-card/order-card";
 
-const room = {
+const roomInfo = {
    images: [
       RoomImage1,
       RoomImage2,
@@ -42,6 +43,7 @@ const room = {
    rating: 4.5,
    comment: 13,
 };
+
 
 const RoomDetail = () => {
    const { id } = useParams();
@@ -100,6 +102,18 @@ const RoomDetail = () => {
       return 0; // Default to 0 if there's no transform
    };
 
+
+   const [room, setRoom] = useState({});
+
+   useEffect(() => {
+      axios
+         .get("/get-hotel-as-customer")
+         .then(({ data }) => {})
+         .then((error) => {
+            console.error(error);
+         });
+   }, []);
+
    return (
       <div className="room-detail">
          <div className="room-details__main-image">
@@ -124,7 +138,7 @@ const RoomDetail = () => {
                      className="d-flex room-detail__images-list"
                      ref={imagesListRef}
                   >
-                     {room.images.map((image, index) => (
+                     {roomInfo.images.map((image, index) => (
                         <div key={index}>
                            <Image
                               src={image}

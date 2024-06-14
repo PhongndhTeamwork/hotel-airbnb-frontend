@@ -12,7 +12,7 @@ export const login = createAsyncThunk("USER_LOGIN", async (info, thunkAPI) => {
       // console.log(info);
       const data = await axios.post("/signin", info, config);
       console.log(data);
-      return "Bearer "+data.data.token;
+      return data.data;
    } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(

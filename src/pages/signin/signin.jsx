@@ -92,7 +92,9 @@ const Signin = () => {
    };
 
    useEffect(() => {
-      if (userInformation !== null) navigate("/");
+      if (userInformation?.role === 0) navigate("/")
+      else if (userInformation?.role === 1) navigate("/hotelier/hotels");
+      else if (userInformation?.role === 2) navigate("/admin/user-list");
    }, [userInformation, navigate]);
 
    return (

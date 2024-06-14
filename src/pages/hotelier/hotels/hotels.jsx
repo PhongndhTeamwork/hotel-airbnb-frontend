@@ -4,6 +4,9 @@ import HotelImage2 from "../../../assets/images/hotel/hotel2.jpg";
 import { Button, Col, Image, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { PlusCircle } from "react-bootstrap-icons";
+import { useEffect, useState } from "react";
+
+import axios from "axios";
 
 const Hotels = () => {
    const hotels = [
@@ -28,6 +31,17 @@ const Hotels = () => {
    ];
 
    const navigate = useNavigate();
+
+   const [allHotels, setAllHotels] = useState({});
+
+   useEffect(() => {
+      axios
+         .get("/get-hotel-as-customer")
+         .then(({ data }) => {})
+         .then((error) => {
+            console.error(error);
+         });
+   }, []);
 
    return (
       <div className="hotelier-hotels mb-5">

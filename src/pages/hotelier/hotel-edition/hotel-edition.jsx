@@ -19,6 +19,7 @@ import RoomImage10 from "../../../assets/images/room/room10.jpg";
 import RoomImage11 from "../../../assets/images/room/room11.jpg";
 import RoomImage12 from "../../../assets/images/room/room12.jpg";
 import AvatarImage from "../../../assets/images/tourist2.jpg";
+import axios from "axios";
 
 const animatedComponents = makeAnimated();
 
@@ -256,6 +257,17 @@ const HotelEdition = () => {
 
    const [numberOfImage, setNumberOfImage] = useState(3);
    const [images, setImages] = useState([]);
+
+   const [hotel, setHotel] = useState({});
+
+   // useEffect(() => {
+   //    axios
+   //       .get("/get-hotel-as-customer")
+   //       .then(({ data }) => {})
+   //       .then((error) => {
+   //          console.error(error);
+   //       });
+   // }, []);
 
    const handleChangeImage = (e, index) => {
       const file = e.target.files[0];
