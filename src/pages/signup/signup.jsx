@@ -19,10 +19,12 @@ import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { Image, Row, Col, Button } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
    const [showPassword, setShowPassword] = useState(false);
    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+   const navigate = useNavigate();
 
    const handleClickShowPassword = () => setShowPassword((show) => !show);
    const handleClickShowConfirmPassword = () =>
@@ -37,7 +39,7 @@ const Signup = () => {
    };
 
    //? Signup logic
-   const [isSignupAsHotelier, setIsSignupAsHotelier] = useState(false);
+   const [role, setRole] = useState("customer");
    const [userInfo, setUserInfo] = useState({
       name: "",
       phoneNumber: "",
@@ -49,6 +51,12 @@ const Signup = () => {
       phoneNumber: "",
       password: "",
       confirmPassword: "",
+   });
+   const [isFocus, setIsFocus] = useState({
+      name: false,
+      phoneNumber: false,
+      password: false,
+      confirmPassword: false,
    });
 
    const handleSignup = () => {
@@ -84,10 +92,11 @@ const Signup = () => {
          password: "",
          confirmPassword: "",
       });
+      // console.log(role);
       axios
          .post(
             `${
-               isSignupAsHotelier
+               role === "hotelier"
                   ? "/signup-as-hotelier"
                   : "/signup-as-customer"
             }`,
@@ -98,16 +107,21 @@ const Signup = () => {
                confirmPassword: userInfo.confirmPassword,
             }
          )
-         .then(({ data }) => {
-            if (data === "Phone number is duplicated") {
-               setError({
-                  ...error,
-                  phoneNumber: "Phone number is duplicated",
-               });
-            }
+         .then((data) => {
             console.log(data);
+            navigate("/");
          })
-         .catch(() => console.log);
+         .catch(({ response }) => {
+            console.log(response);
+            if (response.data === "phone number is duplicated") {
+               setError({ ...error, phoneNumber: response.data });
+            }
+         });
+   };
+
+   const handleRoleChange = (e) => {
+      console.log(e.target.value);
+      setRole(e.target.value);
    };
 
    return (
@@ -119,11 +133,22 @@ const Signup = () => {
                </div>
                <div className="signup__form mt-3">
                   <TextField
+                     error={
+                        (userInfo.phoneNumber === ""  &&
+                        isFocus.phoneNumber) ||  error.phoneNumber !== "" 
+                           ? true
+                           : false
+                     }
                      id="outlined-basic"
-                     label="Phone Number"
+                     label={
+                        userInfo.phoneNumber === "" && isFocus.phoneNumber
+                           ? "Please enter phone number" : error.phoneNumber !== "" ? "Phone Number is duplicated" 
+                           : "Phone Number"
+                     }
                      variant="outlined"
                      className="signup__input"
                      onChange={(e) => {
+                        setIsFocus({ ...isFocus, phoneNumber: true });
                         setUserInfo({
                            ...userInfo,
                            phoneNumber: e.target.value,
@@ -132,7 +157,12 @@ const Signup = () => {
                   />
                   <TextField
                      id="outlined-basic"
-                     label="Name"
+                     error={userInfo.name === "" && isFocus.name ? true : false}
+                     label={
+                        userInfo.name === "" && isFocus.name
+                           ? "Please enter name"
+                           : "Name"
+                     }
                      variant="outlined"
                      className="signup__input"
                      onChange={(e) => {
@@ -140,6 +170,7 @@ const Signup = () => {
                            ...userInfo,
                            name: e.target.value,
                         });
+                        setIsFocus({ ...isFocus, name: true });
                      }}
                   />
                   <FormControl
@@ -147,17 +178,32 @@ const Signup = () => {
                      variant="outlined"
                      className="signup__input"
                   >
-                     <InputLabel htmlFor="outlined-adornment-password">
-                        Password
+                     <InputLabel
+                        htmlFor="outlined-adornment-password"
+                        error={
+                           userInfo.password === "" && isFocus.password
+                              ? true
+                              : false
+                        }
+                     >
+                        {userInfo.password === "" && isFocus.password
+                           ? "Please enter password"
+                           : "Password"}
                      </InputLabel>
                      <OutlinedInput
                         id="outlined-adornment-password"
+                        error={
+                           userInfo.password === "" && isFocus.password
+                              ? true
+                              : false
+                        }
                         type={showPassword ? "text" : "password"}
                         onChange={(e) => {
                            setUserInfo({
                               ...userInfo,
                               password: e.target.value,
                            });
+                           setIsFocus({ ...isFocus, password: true });
                         }}
                         endAdornment={
                            <InputAdornment position="end">
@@ -175,7 +221,11 @@ const Signup = () => {
                               </IconButton>
                            </InputAdornment>
                         }
-                        label="Password"
+                        label={
+                           userInfo.password === "" && isFocus.password
+                              ? "Please enter password"
+                              : "Password: "
+                        }
                      />
                   </FormControl>
                   <FormControl
@@ -183,14 +233,29 @@ const Signup = () => {
                      variant="outlined"
                      className="signup__input"
                   >
-                     <InputLabel htmlFor="outlined-adornment-password">
-                        Confirm Password
+                     <InputLabel
+                        htmlFor="outlined-adornment-password"
+                        error={
+                           confirmPassword === "" && isFocus.confirmPassword
+                              ? true
+                              : false
+                        }
+                     >
+                        {confirmPassword === "" && isFocus.confirmPassword
+                           ? "Please reenter password"
+                           : "Confirm Password"}
                      </InputLabel>
                      <OutlinedInput
                         id="outlined-adornment-password"
                         type={showConfirmPassword ? "text" : "password"}
+                        error={
+                           confirmPassword === "" && isFocus.confirmPassword
+                              ? true
+                              : false
+                        }
                         onChange={(e) => {
                            setConfirmPassword(e.target.value);
+                           setIsFocus({ ...isFocus, confirmPassword: true });
                         }}
                         endAdornment={
                            <InputAdornment position="end">
@@ -208,18 +273,43 @@ const Signup = () => {
                               </IconButton>
                            </InputAdornment>
                         }
-                        label="Password"
+                        label={
+                           confirmPassword === "" && isFocus.confirmPassword
+                              ? "Please reenter password"
+                              : "Confirm Password"
+                        }
                      />
                   </FormControl>
-                  <div>
-                     <input
-                        type="checkbox"
-                        id="id-hotelier"
-                        onChange={(e) => {
-                           setIsSignupAsHotelier(e.target.checked);
-                        }}
-                     />
-                     <label for="id-hotelier"> &nbsp;Sign up as hotelier</label>
+                  <div className="d-flex justify-content-center">
+                     <div className="mx-3 d-flex align-items-center">
+                        <input
+                           type="radio"
+                           id="id-customer"
+                           name="role"
+                           value="customer" // Assign a value to this radio button
+                           onChange={handleRoleChange}
+                           checked={role === "customer"}
+                        />
+                        <label
+                           for="id-customer"
+                           style={{ position: "relative", bottom: "1px" }}
+                        >
+                           &nbsp;Sign up as customer
+                        </label>
+                     </div>
+                     <div className="mx-3 d-flex align-items-center">
+                        <input
+                           type="radio"
+                           id="id-hotelier"
+                           name="role"
+                           value="hotelier" // Assign a value to this radio button
+                           checked={role === "hotelier"}
+                           onChange={handleRoleChange}
+                        />
+                        <label for="id-hotelier">
+                           &nbsp;Sign up as hotelier
+                        </label>
+                     </div>
                   </div>
                </div>
                <div

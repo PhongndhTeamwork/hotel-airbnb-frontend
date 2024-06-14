@@ -89,7 +89,7 @@ const Header = () => {
                      setIsOpenDropdown(!isOpenDropdown);
                   }}
                />
-               <PersonCircle size="30px" />
+               <PersonCircle size="30px" fill="grey"/>
             </div>
             <div
                className="header__dropdown"

@@ -20,7 +20,7 @@ import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { Image, Row, Col, Button } from "react-bootstrap";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../services/features/userLoginSlice";
 
@@ -49,6 +49,12 @@ const Signin = () => {
    const [error, setError] = useState({
       phoneNumber: "",
       password: "",
+      auth: ""
+   });
+
+   const [isFocus, setIsFocus] = useState({
+      phoneNumber: false,
+      password: false,
    });
 
    const handleSignin = () => {
@@ -111,7 +117,16 @@ const Signin = () => {
                <div className="signin__form mt-3">
                   <TextField
                      id="outlined-basic"
-                     label="Phone Number"
+                     error={
+                        (userInfo.phoneNumber === "" && isFocus.phoneNumber) || errorMessage !== null
+                           ? true
+                           : false
+                     }
+                     label={
+                        userInfo.phoneNumber === "" && isFocus.phoneNumber
+                           ? "Please enter phone number" : errorMessage !== null ? "Phone number or password incorrect" 
+                           : "Phone Number"
+                     }
                      variant="outlined"
                      className="signin__input"
                      onChange={(e) => {
@@ -119,6 +134,7 @@ const Signin = () => {
                            ...userInfo,
                            phoneNumber: e.target.value,
                         });
+                        setIsFocus({ ...isFocus, phoneNumber: true });
                      }}
                   />
                   <FormControl
@@ -126,17 +142,32 @@ const Signin = () => {
                      variant="outlined"
                      className="signin__input"
                   >
-                     <InputLabel htmlFor="outlined-adornment-password">
-                        Password
+                     <InputLabel
+                        htmlFor="outlined-adornment-password"
+                        error={
+                           userInfo.password === "" && isFocus.password
+                              ? true
+                              : false
+                        }
+                     >
+                        {userInfo.password === "" && isFocus.password
+                           ? "Please enter password"
+                           : "Password"}
                      </InputLabel>
                      <OutlinedInput
                         id="outlined-adornment-password"
                         type={showPassword ? "text" : "password"}
+                        error={
+                           userInfo.password === "" && isFocus.password
+                              ? true
+                              : false
+                        }
                         onChange={(e) => {
                            setUserInfo({
                               ...userInfo,
                               password: e.target.value,
                            });
+                           setIsFocus({ ...isFocus, password: true });
                         }}
                         endAdornment={
                            <InputAdornment position="end">
@@ -154,7 +185,11 @@ const Signin = () => {
                               </IconButton>
                            </InputAdornment>
                         }
-                        label="Password"
+                        label={
+                           userInfo.password === "" && isFocus.password
+                              ? "Please enter password"
+                              : "Password"
+                        }
                      />
                   </FormControl>
                </div>
