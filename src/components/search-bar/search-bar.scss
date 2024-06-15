@@ -9,10 +9,10 @@
   border-radius: 5px;
   bottom: -25px;
   width: 100%;
-  max-width: 1024px;
-  z-index: 15!important;
+  // max-width: 1024px;
+  // z-index: 15!important;
   position: relative;
-  gap : 3rem;
+  gap : 1rem;
   padding : 0.25rem 2rem;
 
   button {
@@ -46,6 +46,7 @@
     background-color: white;
     color: gray;
     border-radius: 5px;
+    z-index: 11;
 
     .option-item {
       width: 200px;

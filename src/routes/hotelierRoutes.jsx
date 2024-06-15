@@ -4,7 +4,7 @@ import Rooms from "../pages/hotelier/rooms/rooms";
 import Profile from "../pages/hotelier/profile/profile";
 import HotelEdition from "../pages/hotelier/hotel-edition/hotel-edition";
 import RoomEdition from "../pages/hotelier/room-edition/room-edition";
-import HotelAddition from "../pages/hotelier/hotel-addition/hotel-addtion";
+import HotelAddition from "../pages/hotelier/hotel-addition/hotel-addition";
 
 
 const HotelierRoutes = () => {

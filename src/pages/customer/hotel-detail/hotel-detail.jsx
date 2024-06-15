@@ -125,15 +125,22 @@ const HotelDetail = () => {
    const [page, setPage] = useState(1);
 
    const [hotel, setHotel] = useState({});
+   const [hotelImages, setHotelImages] = useState([]);
 
    useEffect(() => {
       axios
-         .get("/get-hotel-as-customer")
-         .then(({ data }) => {})
+         .get("/get-hotel-detail/" + id)
+         .then(({ data }) => {
+            console.log(data);
+         })
          .then((error) => {
             console.error(error);
          });
-   }, []);
+   }, [id]);
+
+   useEffect(() => {
+      
+   })
 
    return (
       <div className="hotel-detail">

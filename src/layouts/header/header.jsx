@@ -56,13 +56,13 @@ const Header = () => {
             </div>
 
             <div className="header-list">
-               {userInformation.role === 0 && (
+               {userInformation?.role === 0 && (
                   <div className="header-list__item">
                      <FontAwesomeIcon icon={faHome} />
                      <Link to="/">Home</Link>
                   </div>
                )}
-               {userInformation.role === 1 && (
+               {userInformation?.role === 1 && (
                   <div className="header-list__item">
                      <FontAwesomeIcon
                         icon={faInfoCircle}
@@ -71,14 +71,23 @@ const Header = () => {
                      <Link to="/hotelier/hotels">Hotelier</Link>
                   </div>
                )}
-               {userInformation.role === 2 && (
-                  <div className="header-list__item">
-                     <FontAwesomeIcon
-                        icon={faTools}
-                        className="header-list__icon"
-                     />
-                     <Link to="/admin/user-list">Admin</Link>
-                  </div>
+               {userInformation?.role === 2 && (
+                  <Fragment>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon
+                           icon={faTools}
+                           className="header-list__icon"
+                        />
+                        <Link to="/admin/user-list">Users</Link>
+                     </div>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon
+                           icon={faTools}
+                           className="header-list__icon"
+                        />
+                        <Link to="/admin/amenity">Amenities</Link>
+                     </div>
+                  </Fragment>
                )}
 
                <div className="header-list__item">

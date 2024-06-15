@@ -6,6 +6,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { PlusCircle, DashCircle } from "react-bootstrap-icons";
 import { Image } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 const animatedComponents = makeAnimated();
 
@@ -154,9 +155,19 @@ const services = [
 
 const RoomEdition = () => {
    const { id } = useParams();
+   const { userInformation } = useSelector((state) => state.userLogin);
+
+   const config = {
+      headers: {
+         Authorization: `Bearer ${userInformation.token}`,
+         "Content-Type": "application/json",
+      },
+   };
+
 
    const [numberOfImage, setNumberOfImage] = useState(3);
    const [images, setImages] = useState([]);
+   const [room, setRoom] = useState({});
 
    const handleChangeImage = (e, index) => {
       const file = e.target.files[0];
@@ -175,10 +186,16 @@ const RoomEdition = () => {
       setImages(imagesTemp);
    };
 
+   const handleSubmit = () => {
+      
+   }
+
+
+
    return (
       <div className="room-edition">
          <div className="room-edition__form">
-            <h3>Add New Room</h3>
+            <h3>{id ? "Edit room" : "Add New Room"}</h3>
             <div className="room-edition__form-row my-4 w-100">
                <TextField
                   // id="outlined-basic"
@@ -186,16 +203,39 @@ const RoomEdition = () => {
                   variant="outlined"
                   className="w-100"
                   size="small"
+                  value={room?.name}
+                  onChange={(e) => {
+                     setRoom({...room, name : e.target.value});
+                  }}
                />
             </div>
-            <div className="room-edition__form-row my-4 w-100">
+            <div className="room-edition__form-row my-4 w-100 d-flex flex-row">
                <TextField
-                  label="Description"
+                  label="Price"
                   variant="outlined"
-                  multiline
-                  className="w-100"
-                  rows={4}
+                  className="w-100 me-2"
+                  type="number"
                   size="small"
+                  InputProps={{
+                     inputProps: {
+                         step: 0.05, 
+                     },
+                 }}
+                  value={room?.price}
+                  onChange={(e) => {
+                     setRoom({...room, price : e.target.value});
+                  }}
+               />
+               <TextField
+                  label="Area"
+                  variant="outlined"
+                  className="w-100 ms-2"
+                  type="number"
+                  size="small"
+                  value={room?.area}
+                  onChange={(e) => {
+                     setRoom({...room, area : e.target.value});
+                  }}
                />
             </div>
             <div className="room-edition__form-row my-4 w-100">
@@ -225,6 +265,9 @@ const RoomEdition = () => {
                   // defaultValue={}
                   isMulti
                   options={services}
+                  onChange={() => {
+
+                  }}
                   placeholder="Select services..."
                />
             </div>
@@ -298,7 +341,7 @@ const RoomEdition = () => {
                      </div>
                   ))}
             </div>
-            <Button variant="contained" color="secondary" className="mt-4">
+            <Button variant="contained" color="secondary" className="mt-4" onClick={handleSubmit}>
                Submit
             </Button>
          </div>

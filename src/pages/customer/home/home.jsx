@@ -15,9 +15,11 @@ import HotelImage12 from "../../../assets/images/hotel/hotel12.jpg";
 import { Col, Row } from "react-bootstrap";
 import HotelCard from "../../../components/hotel-card/hotel-card";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SearchBar from "../../../components/search-bar/search-bar";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { SearchContext } from "../../../contexts/search-context";
 
 const hotelInfos = [
    {
@@ -131,17 +133,60 @@ const hotelInfos = [
 ];
 const Home = () => {
    const [page, setPage] = useState(1);
+   const { searchInfo } = useContext(SearchContext);
+   const [pageTotal, setPageTotal] = useState(0);
 
    const [hotels, setHotels] = useState([]);
 
+   const { userInformation } = useSelector((state) => state.userLogin);
+
    useEffect(() => {
+      if (!userInformation) return;
+      const config = {
+         headers: {
+            Authorization: `Bearer ${userInformation.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+      // /get-hotel-as-customer?stayingDate=2024-05-29&leavingDate=2024-06-01&roomType=1&hotelName=a&hotelAddress=a&roomNumber=1&pageSize=4&pageNumber=1
       axios
-         .get("/get-hotel-as-customer")
-         .then(({ data }) => {})
-         .then((error) => {
+         .get(
+            "/get-hotel-as-customer?roomNumber=1&pageSize=12&pageNumber=1",
+            config
+         )
+         .then(({ data }) => {
+            console.log(data);
+            setHotels(data.data);
+            setPageTotal(data.pageTotal);
+         })
+         .catch((error) => {
             console.error(error);
          });
-   }, []);
+   }, [userInformation]);
+
+   useEffect(() => {
+      if (!userInformation) return;
+      const config = {
+         headers: {
+            Authorization: `Bearer ${userInformation.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+      // /get-hotel-as-customer?stayingDate=2024-05-29&leavingDate=2024-06-01&roomType=1&hotelName=a&hotelAddress=a&roomNumber=1&pageSize=4&pageNumber=1
+      axios
+         .get(
+            `/get-hotel-as-customer?stayingDate=${searchInfo.stayingDate}&leavingDate=${searchInfo.leavingDate}&roomType=${searchInfo.roomType}&hotelName=${searchInfo.hotelName}&hotelAddress=${searchInfo.hotelAddress}&roomNumber=${searchInfo.roomNumber}&pageSize=12&pageNumber=1`,
+            config
+         )
+         .then(({ data }) => {
+            console.log(data);
+            setHotels(data.data);
+            setPageTotal(data.pageTotal);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [userInformation, searchInfo]);
 
    return (
       <div className="home">
@@ -169,6 +214,7 @@ const Home = () => {
                page={page}
                between={4}
                total={250}
+               // total={pageTotal}
                limit={20}
                changePage={(page) => {
                   setPage(page);

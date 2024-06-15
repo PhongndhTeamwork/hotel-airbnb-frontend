@@ -288,6 +288,11 @@ const HotelEdition = () => {
 
    useEffect(() => {}, []);
 
+   const handleUpdateHotel = () => {
+      console.log(images);
+      console.log(hotel);
+   };
+
    return (
       <div className="hotel-edition">
          <Row>
@@ -301,6 +306,10 @@ const HotelEdition = () => {
                         variant="outlined"
                         className="w-100"
                         size="small"
+                        value={hotel?.name}
+                        onChange={(e) => {
+                           setHotel({ ...hotel, name: e.target.value });
+                        }}
                      />
                   </div>
                   <div className="hotel-edition__form-row my-4 w-100">
@@ -311,6 +320,10 @@ const HotelEdition = () => {
                         className="w-100"
                         rows={4}
                         size="small"
+                        value={hotel?.description}
+                        onChange={(e) => {
+                           setHotel({ ...hotel, description: e.target.value });
+                        }}
                      />
                   </div>
                   <div className="hotel-edition__form-row my-4 w-100">
@@ -319,6 +332,10 @@ const HotelEdition = () => {
                         variant="outlined"
                         className="w-100"
                         size="small"
+                        value={hotel?.address}
+                        onChange={(e) => {
+                           setHotel({ ...hotel, address: e.target.value });
+                        }}
                      />
                   </div>
                   <div className="hotel-edition__form-row hotel-edition_location my-4 w-100">
@@ -329,8 +346,10 @@ const HotelEdition = () => {
                         size="small"
                         // multiline
                         // rows={4}
+                        value={hotel?.location}
                         onChange={(e) => {
                            setLocation(e.target.value);
+                           setHotel({ ...hotel, location: e.target.value });
                         }}
                      />
                      {location.includes("iframe") && (
@@ -345,12 +364,24 @@ const HotelEdition = () => {
                         className="hotel-edition__selector"
                         closeMenuOnSelect={false}
                         components={animatedComponents}
-                        // defaultValue={}
+                        // defaultValue={hotel?.services}
                         isMulti
                         options={services}
+                        onChange={(e) => {
+                           setHotel({ ...hotel, services: e });
+                        }}
                         placeholder="Select services..."
                      />
                   </div>
+                  <Button
+                     variant="contained"
+                     color="secondary"
+                     className="mt-2 mb-4"
+                     onClick={handleUpdateHotel}
+                  >
+                     Submit
+                  </Button>
+                  <hr />
                   <div className="hotel-edition__form-row my-4 w-100">
                      <div className="d-flex hotel-edition__image-button">
                         <Button
@@ -424,13 +455,6 @@ const HotelEdition = () => {
                            </div>
                         ))}
                   </div>
-                  <Button
-                     variant="contained"
-                     color="secondary"
-                     className="mt-4"
-                  >
-                     Submit
-                  </Button>
                </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={6} xl={5} xxl={5}>

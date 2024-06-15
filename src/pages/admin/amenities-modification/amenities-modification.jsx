@@ -27,6 +27,7 @@ import { Button } from "@mui/material/";
 import { XCircle, PencilSquare, PlusCircle } from "react-bootstrap-icons";
 
 import { Image } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const services = [
    {
@@ -124,6 +125,7 @@ const services = [
 ];
 
 const AmenitiesModification = () => {
+   const navigate = useNavigate();
    return (
       <div className="amenities-modification">
          <Button
@@ -132,7 +134,7 @@ const AmenitiesModification = () => {
             className="d-flex align-items-center px-4 my-3"
             style={{ margin: "0 auto" }}
             onClick={() => {
-               // navigate("/hotelier/add-room");
+               navigate("/admin/add-amenity");
             }}
          >
             <PlusCircle size="20px" /> &nbsp; Add New Service
@@ -179,6 +181,7 @@ const AmenitiesModification = () => {
                               variant="contained"
                               color="info"
                               className="mx-2"
+                              onClick={() => {navigate("/admin/edit-amenity/"+service?.id)}}
                            >
                               <PencilSquare />
                               &nbsp; Edit

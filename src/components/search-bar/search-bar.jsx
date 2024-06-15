@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-   faHome,
-   faInfoCircle,
-   faTools,
-   faEnvelope,
+   // faHome,
+   // faInfoCircle,
+   // faTools,
+   // faEnvelope,
    faBed,
    faCalendarDays,
    faPerson,
+   faHouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import "react-date-range/dist/styles.css"; // main style file
@@ -18,10 +19,12 @@ import { DateRange } from "react-date-range";
 import { format } from "date-fns";
 import { Button } from "@mui/material/";
 
+import { SearchContext } from "../../contexts/search-context";
 
 // import { Button } from "@mui/material";
 
 const SearchBar = () => {
+   const { searchInfo, setSearchInfo } = useContext(SearchContext);
    const [openDate, setOpenDate] = useState(false);
    const [date, setDate] = useState([
       {
@@ -31,11 +34,13 @@ const SearchBar = () => {
       },
    ]);
 
+   const [address, setAddress] = useState("");
+   const [hotelName, setHotelName] = useState("");
+
    const [openOptions, setOpenOptions] = useState(false);
    const [options, setOptions] = useState({
-      adult: 1,
-      children: 0,
-      pet: 0,
+      rooms: 1,
+      type: 1,
    });
 
    const handleOption = (name, operation) => {
@@ -46,6 +51,27 @@ const SearchBar = () => {
          };
       });
    };
+
+   const formatDateToYYYYMMDD = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+   };
+
+   const handleSearch = () => {
+      setSearchInfo({
+         ...searchInfo,
+         roomType: options.type,
+         roomNumber: options.rooms,
+         stayingDate: formatDateToYYYYMMDD(new Date(date[0].startDate)),
+         leavingDate: formatDateToYYYYMMDD(new Date(date[0].endDate)),
+         hotelName :address,
+         hotelAddress:hotelName
+
+      });
+      console.log(searchInfo);
+   };
    return (
       <div>
          <div className="header-search">
@@ -55,6 +81,20 @@ const SearchBar = () => {
                   type="text"
                   placeholder="Where are you going?"
                   className="header-search-input"
+                  onChange={(e) => {
+                     setAddress(e.target.value);
+                  }}
+               />
+            </div>
+            <div className="header-search__item">
+               <FontAwesomeIcon icon={faHouse} className="header-icon" />
+               <input
+                  type="text"
+                  placeholder="Hotel"
+                  className="header-search-input"
+                  onChange={(e) => {
+                     setHotelName(e.target.value);
+                  }}
                />
             </div>
             <div className="header-search__item">
@@ -83,25 +123,25 @@ const SearchBar = () => {
                <span
                   onClick={() => setOpenOptions(!openOptions)}
                   className="header-search__text"
-               >{`${options.adult} adult • ${options.children} children • ${options.pet} pet`}</span>
+               >{`rooms quantity ${options.rooms} • type ${options.type}`}</span>
                {openOptions && (
                   <div className="options">
                      <div className="option-item">
-                        <span className="option-text">Adult</span>
+                        <span className="option-text">Rooms</span>
                         <div className="option-counter">
                            <Button
-                              disabled={options.adult <= 1}
+                              disabled={options.rooms <= 1}
                               className="option-btn"
-                              onClick={() => handleOption("adult", "d")}
+                              onClick={() => handleOption("rooms", "d")}
                               variant="outlined"
                               color="inherit"
                            >
                               -
                            </Button>
-                           <p className="option-number">{`${options.adult}`}</p>
+                           <p className="option-number">{`${options.rooms}`}</p>
                            <Button
                               className="option-btn"
-                              onClick={() => handleOption("adult", "i")}
+                              onClick={() => handleOption("rooms", "i")}
                               variant="outlined"
                               color="inherit"
                            >
@@ -110,44 +150,21 @@ const SearchBar = () => {
                         </div>
                      </div>
                      <div className="option-item">
-                        <span className="option-text">Children</span>
+                        <span className="option-text">Type</span>
                         <div className="option-counter">
                            <Button
-                              disabled={options.children <= 0}
+                              disabled={options.type <= 1}
                               className="option-btn"
-                              onClick={() => handleOption("children", "d")}
+                              onClick={() => handleOption("type", "d")}
                               variant="outlined"
                               color="inherit"
                            >
                               -
                            </Button>
-                           <p className="option-number">{`${options.children}`}</p>
+                           <p className="option-number">{`${options.type}`}</p>
                            <Button
                               className="option-btn"
-                              onClick={() => handleOption("children", "i")}
-                              variant="outlined"
-                              color="inherit"
-                           >
-                              +
-                           </Button>
-                        </div>
-                     </div>
-                     <div className="option-item">
-                        <span className="option-text">Pet</span>
-                        <div className="option-counter">
-                           <Button
-                              disabled={options.pet <= 0}
-                              className="option-btn"
-                              onClick={() => handleOption("pet", "d")}
-                              variant="outlined"
-                              color="inherit"
-                           >
-                              -
-                           </Button>
-                           <p className="option-number">{`${options.pet}`}</p>
-                           <Button
-                              className="option-btn"
-                              onClick={() => handleOption("pet", "i")}
+                              onClick={() => handleOption("type", "i")}
                               variant="outlined"
                               color="inherit"
                            >
@@ -160,7 +177,14 @@ const SearchBar = () => {
             </div>
 
             <div className="header-search__item">
-               <Button className="header-btn" variant="outlined" color="inherit">
+               <Button
+                  className="header-btn"
+                  variant="outlined"
+                  color="inherit"
+                  onClick={() => {
+                     handleSearch();
+                  }}
+               >
                   Search
                </Button>
             </div>

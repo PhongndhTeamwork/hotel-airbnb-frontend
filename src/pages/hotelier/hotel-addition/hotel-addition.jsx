@@ -155,7 +155,16 @@ const services = [
 const HotelAddition = () => {
    const [location, setLocation] = useState("");
 
-   const [newHotel, setNewHotel] = useState({});
+   const [newHotel, setNewHotel] = useState({
+      name: "",
+      address: "",
+      star: "",
+      description: "",
+      location: "",
+      services: [],
+   });
+
+   // const [newHotelImages, setNewHotelImages] = useState([]);
 
    // useEffect(() => {
    //    axios
@@ -186,6 +195,10 @@ const HotelAddition = () => {
       setImages(imagesTemp);
    };
 
+   const handleHotelAddition = () => {
+      console.log(images,newHotel)
+   }
+
    return (
       <div className="hotel-addition">
          <div className="hotel-addition__form">
@@ -197,6 +210,9 @@ const HotelAddition = () => {
                   variant="outlined"
                   className="w-100"
                   size="small"
+                  onChange={(e) => {
+                     setNewHotel({ ...newHotel, name: e.target.value });
+                  }}
                />
             </div>
             <div className="hotel-addition__form-row my-4 w-100">
@@ -207,6 +223,9 @@ const HotelAddition = () => {
                   className="w-100"
                   rows={4}
                   size="small"
+                  onChange={(e) => {
+                     setNewHotel({ ...newHotel, description: e.target.value });
+                  }}
                />
             </div>
             <div className="hotel-addition__form-row my-4 w-100">
@@ -215,6 +234,9 @@ const HotelAddition = () => {
                   variant="outlined"
                   className="w-100"
                   size="small"
+                  onChange={(e) => {
+                     setNewHotel({ ...newHotel, address: e.target.value });
+                  }}
                />
             </div>
             <div className="hotel-addition__form-row hotel-addition_location my-4 w-100">
@@ -227,6 +249,7 @@ const HotelAddition = () => {
                   // rows={4}
                   onChange={(e) => {
                      setLocation(e.target.value);
+                     setNewHotel({ ...newHotel, location: e.target.value });
                   }}
                />
                {location.includes("iframe") && (
@@ -244,17 +267,10 @@ const HotelAddition = () => {
                   // defaultValue={}
                   isMulti
                   options={services}
-                  placeholder="Select services..."
-               />
-            </div>
-            <div className="hotel-addition__form-row my-4 w-100">
-               <Select
-                  className="hotel-addition__selector"
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
-                  // defaultValue={}
-                  isMulti
-                  options={services}
+                  onChange={(e) => {
+                     setNewHotel({...newHotel, services : e});
+                     console.log(newHotel)
+                  }}
                   placeholder="Select services..."
                />
             </div>
@@ -328,7 +344,9 @@ const HotelAddition = () => {
                      </div>
                   ))}
             </div>
-            <Button variant="contained" color="secondary" className="mt-4">Submit</Button>
+            <Button variant="contained" color="secondary" className="mt-4" onClick={handleHotelAddition}>
+               Submit
+            </Button>
          </div>
       </div>
    );

@@ -10,12 +10,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import store from "./services/store";
 import { Provider } from "react-redux";
+import { SearchProvider } from "./contexts/search-context";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
    <Provider store={store}>
       <BrowserRouter>
-         <App />
+         <SearchProvider>
+            <App />
+         </SearchProvider>
       </BrowserRouter>
    </Provider>
 );

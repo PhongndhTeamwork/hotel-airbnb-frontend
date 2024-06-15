@@ -107,12 +107,14 @@ const RoomDetail = () => {
 
    useEffect(() => {
       axios
-         .get("/get-hotel-as-customer")
-         .then(({ data }) => {})
+         .get("/get-room-detail/"+id)
+         .then(({ data }) => {
+            console.log(data);
+         })
          .then((error) => {
             console.error(error);
          });
-   }, []);
+   }, [id]);
 
    return (
       <div className="room-detail">

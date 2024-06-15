@@ -7,6 +7,7 @@ import { PlusCircle } from "react-bootstrap-icons";
 import { useEffect, useState } from "react";
 
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Hotels = () => {
    const hotels = [
@@ -30,18 +31,29 @@ const Hotels = () => {
       },
    ];
 
+   const { userInformation } = useSelector((state) => state.userLogin);
+
    const navigate = useNavigate();
 
    const [allHotels, setAllHotels] = useState({});
 
    useEffect(() => {
+      const config = {
+         headers: {
+            Authorization: `Bearer ${userInformation.token}`,
+            "Content-Type": "application/json",
+         },
+      };
       axios
-         .get("/get-hotel-as-customer")
-         .then(({ data }) => {})
+         .get("/get-hotel?pageNumber=1&pageSize=12", config)
+         .then(({ data }) => {
+            console.log(data);
+            setAllHotels(data.data);
+         })
          .then((error) => {
             console.error(error);
          });
-   }, []);
+   }, [userInformation]);
 
    return (
       <div className="hotelier-hotels mb-5">
