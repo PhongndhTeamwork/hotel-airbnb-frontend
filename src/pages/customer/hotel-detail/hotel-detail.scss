@@ -68,19 +68,28 @@
       }
    }
 
-   .hotel-detail__hotelier{
+   .hotel-detail__hotelier {
       border: 1px solid grey;
       border-radius: 0.5rem;
       padding: 0.5rem 1rem;
       width: fit-content;
    }
 
-   .hotel-detail__map{
+   .hotel-detail__map {
       border: 1px solid grey;
-      iframe{
+
+      iframe {
          width: 100%;
       }
    }
 
+   .hotel-detail__feedback {
+      background-color: black;
+      color: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      max-height: 60vh;
+      overflow: auto;
+   }
 
 }

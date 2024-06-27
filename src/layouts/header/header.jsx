@@ -57,19 +57,30 @@ const Header = () => {
 
             <div className="header-list">
                {userInformation?.role === 0 && (
-                  <div className="header-list__item">
-                     <FontAwesomeIcon icon={faHome} />
-                     <Link to="/">Home</Link>
-                  </div>
+                  <Fragment>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon icon={faHome} />
+                        <Link to="/">Home</Link>
+                     </div>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon
+                           icon={faInfoCircle}
+                           className="header-list__icon"
+                        />
+                        <Link to="/booked">Booked</Link>
+                     </div>
+                  </Fragment>
                )}
                {userInformation?.role === 1 && (
-                  <div className="header-list__item">
-                     <FontAwesomeIcon
-                        icon={faInfoCircle}
-                        className="header-list__icon"
-                     />
-                     <Link to="/hotelier/hotels">Hotelier</Link>
-                  </div>
+                  <Fragment>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon
+                           icon={faInfoCircle}
+                           className="header-list__icon"
+                        />
+                        <Link to="/hotelier/hotels">Hotelier</Link>
+                     </div>
+                  </Fragment>
                )}
                {userInformation?.role === 2 && (
                   <Fragment>
@@ -89,14 +100,21 @@ const Header = () => {
                      </div>
                   </Fragment>
                )}
-
-               <div className="header-list__item">
-                  <FontAwesomeIcon
-                     icon={faEnvelope}
-                     className="header-list__icon"
-                  />
-                  <Link to="#contact">Contact</Link>
-               </div>
+               {!userInformation && (
+                  <Fragment>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon icon={faHome} />
+                        <Link to="/">Home</Link>
+                     </div>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon
+                           icon={faEnvelope}
+                           className="header-list__icon"
+                        />
+                        <Link to="#contact">Contact</Link>
+                     </div>
+                  </Fragment>
+               )}
             </div>
             <div className="header-auth">
                <List

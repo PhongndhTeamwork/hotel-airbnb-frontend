@@ -28,104 +28,154 @@ import { XCircle, PencilSquare, PlusCircle } from "react-bootstrap-icons";
 
 import { Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-const services = [
-   {
-      name: "Breakfast",
-      icon: BreakfastIcon,
-   },
-   {
-      name: "Cave",
-      icon: CaveIcon,
-   },
-   {
-      name: "Golf",
-      icon: GolfIcon,
-   },
-   {
-      name: "Lake",
-      icon: LakeIcon,
-   },
-   {
-      name: "Skiing",
-      icon: SkiingIcon,
-   },
-   {
-      name: "Surfing",
-      icon: SurfingIcon,
-   },
-   {
-      name: "Beach",
-      icon: BeachIcon,
-   },
-   {
-      name: "Seaward",
-      icon: SeawardIcon,
-   },
-   {
-      name: "Skiing",
-      icon: SkiingIcon,
-   },
-   {
-      name: "Pool",
-      icon: PoolIcon,
-   },
-   {
-      name: "Island",
-      icon: IslandIcon,
-   },
-   {
-      name: "Tree House",
-      icon: TreeHouseIcon,
-   },
-   {
-      name: "Underground",
-      icon: UndergroundHouseIcon,
-   },
-   {
-      name: "Camping",
-      icon: CampingIcon,
-   },
-   {
-      name: "Desert",
-      icon: DesertIcon,
-   },
-   {
-      name: "Piano",
-      icon: PianoIcon,
-   },
-   {
-      name: "Room",
-      icon: RoomIcon,
-   },
-   {
-      name: "Zoo",
-      icon: ZooIcon,
-   },
-   {
-      name: "House Boat",
-      icon: HouseBoatIcon,
-   },
-   {
-      name: "Tower",
-      icon: TowerIcon,
-   },
-   {
-      name: "Smart City",
-      icon: SmartCityIcon,
-   },
-   {
-      name: "Historical Site",
-      icon: HistoricalSiteIcon,
-   },
-   {
-      name: "Farm",
-      icon: FarmIcon,
-   },
-];
+import axios from "axios";
+
+// const services = [
+//    {
+//       name: "Breakfast",
+//       icon: BreakfastIcon,
+//    },
+//    {
+//       name: "Cave",
+//       icon: CaveIcon,
+//    },
+//    {
+//       name: "Golf",
+//       icon: GolfIcon,
+//    },
+//    {
+//       name: "Lake",
+//       icon: LakeIcon,
+//    },
+//    {
+//       name: "Skiing",
+//       icon: SkiingIcon,
+//    },
+//    {
+//       name: "Surfing",
+//       icon: SurfingIcon,
+//    },
+//    {
+//       name: "Beach",
+//       icon: BeachIcon,
+//    },
+//    {
+//       name: "Seaward",
+//       icon: SeawardIcon,
+//    },
+//    {
+//       name: "Skiing",
+//       icon: SkiingIcon,
+//    },
+//    {
+//       name: "Pool",
+//       icon: PoolIcon,
+//    },
+//    {
+//       name: "Island",
+//       icon: IslandIcon,
+//    },
+//    {
+//       name: "Tree House",
+//       icon: TreeHouseIcon,
+//    },
+//    {
+//       name: "Underground",
+//       icon: UndergroundHouseIcon,
+//    },
+//    {
+//       name: "Camping",
+//       icon: CampingIcon,
+//    },
+//    {
+//       name: "Desert",
+//       icon: DesertIcon,
+//    },
+//    {
+//       name: "Piano",
+//       icon: PianoIcon,
+//    },
+//    {
+//       name: "Room",
+//       icon: RoomIcon,
+//    },
+//    {
+//       name: "Zoo",
+//       icon: ZooIcon,
+//    },
+//    {
+//       name: "House Boat",
+//       icon: HouseBoatIcon,
+//    },
+//    {
+//       name: "Tower",
+//       icon: TowerIcon,
+//    },
+//    {
+//       name: "Smart City",
+//       icon: SmartCityIcon,
+//    },
+//    {
+//       name: "Historical Site",
+//       icon: HistoricalSiteIcon,
+//    },
+//    {
+//       name: "Farm",
+//       icon: FarmIcon,
+//    },
+// ];
 
 const AmenitiesModification = () => {
    const navigate = useNavigate();
+   const { userInformation } = useSelector((state) => state.userLogin);
+   const config = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+   }, [userInformation]);
+   const [services, setServices] = useState();
+
+   const getServices = useCallback(() => {
+      axios
+         .get("/get-service", config)
+         .then(({ data }) => {
+            console.log(data);
+            setServices(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   },[config])
+
+   
+
+   useEffect(() => {
+     getServices();
+   }, [getServices]);
+
+   const handleRemove = (id) => {
+      const isConfirm = window.confirm(
+         "Are you sure you want to delete this service"
+      );
+      if (!isConfirm) return;
+      axios
+         .delete("/delete-service/" + id, config)
+         .then(({ data }) => {
+            console.log(data);
+            alert("Removed service successfully");
+            getServices();
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   };
+
    return (
       <div className="amenities-modification">
          <Button
@@ -156,8 +206,9 @@ const AmenitiesModification = () => {
                   </tr>
                </MDBTableHead>
                <MDBTableBody>
-                  {services.map((service, index) => (
+                  {services?.map((service, index) => (
                      <tr
+                        key={index}
                         className={
                            index % 3 === 0
                               ? "table-primary"
@@ -170,18 +221,31 @@ const AmenitiesModification = () => {
                            {index + 1}
                         </th>
                         <td className="text-start">
-                           <Image src={service.icon} width="20px" />
+                           <Image
+                              src={
+                                 "http://localhost:5000/" + service?.image_path
+                              }
+                              width="20px"
+                           />
                         </td>
-                        <td className="text-start">{service.name}</td>
+                        <td className="text-start">{service?.name}</td>
                         <td className="text-center">
-                           <Button variant="contained" color="error">
+                           <Button
+                              variant="contained"
+                              color="error"
+                              onClick={() => {
+                                 handleRemove(service?.id);
+                              }}
+                           >
                               <XCircle /> &nbsp; Remove
                            </Button>
                            <Button
                               variant="contained"
                               color="info"
                               className="mx-2"
-                              onClick={() => {navigate("/admin/edit-amenity/"+service?.id)}}
+                              onClick={() => {
+                                 navigate("/admin/edit-amenity/" + service?.id);
+                              }}
                            >
                               <PencilSquare />
                               &nbsp; Edit

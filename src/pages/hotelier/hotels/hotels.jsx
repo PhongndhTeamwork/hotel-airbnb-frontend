@@ -4,10 +4,11 @@ import HotelImage2 from "../../../assets/images/hotel/hotel2.jpg";
 import { Button, Col, Image, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { PlusCircle } from "react-bootstrap-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { PaginationControl } from "react-bootstrap-pagination-control";
 
 const Hotels = () => {
    const hotels = [
@@ -31,21 +32,42 @@ const Hotels = () => {
       },
    ];
 
-   const { userInformation } = useSelector((state) => state.userLogin);
+   const { error, loading, userInformation } = useSelector(
+      (state) => state.userLogin
+   );
 
-   const navigate = useNavigate();
-
-   const [allHotels, setAllHotels] = useState({});
-
-   useEffect(() => {
-      const config = {
+   const config = useMemo(() => {
+      return {
          headers: {
-            Authorization: `Bearer ${userInformation.token}`,
+            Authorization: `Bearer ${userInformation?.token}`,
             "Content-Type": "application/json",
          },
       };
+   }, [userInformation]);
+
+   const navigate = useNavigate();
+
+   const [allHotels, setAllHotels] = useState([]);
+   const [pageTotal, setPageTotal] = useState(1);
+   const [currentPage, setCurrentPage] = useState(1);
+
+   useEffect(() => {
       axios
-         .get("/get-hotel?pageNumber=1&pageSize=12", config)
+         .get("/get-hotel?pageNumber=1&pageSize=4", config)
+         .then(({ data }) => {
+            console.log(data);
+            setPageTotal(data.pageTotal);
+            setAllHotels(data.data);
+         })
+         .then((error) => {
+            console.error(error);
+         });
+   }, [config]);
+
+   const handleChangePage = (page) => {
+      window.scrollTo(0, 0);
+      axios
+         .get(`/get-hotel?pageNumber=${page}&pageSize=4`, config)
          .then(({ data }) => {
             console.log(data);
             setAllHotels(data.data);
@@ -53,7 +75,7 @@ const Hotels = () => {
          .then((error) => {
             console.error(error);
          });
-   }, [userInformation]);
+   };
 
    return (
       <div className="hotelier-hotels mb-5">
@@ -70,7 +92,7 @@ const Hotels = () => {
             </Button>
          </div>
          <Row>
-            {hotels.map((hotel, hotelIndex) => (
+            {allHotels?.map((hotel, hotelIndex) => (
                <Col
                   xs={12}
                   sm={12}
@@ -79,18 +101,45 @@ const Hotels = () => {
                   xl={4}
                   xxl={4}
                   key={hotelIndex}
-                  className="hotelier-hotels__card"
+                  className="hotelier-hotels__card mb-4"
                   onClick={() => {
-                     navigate("/hotelier/edit-hotel/1");
+                     navigate("/hotelier/edit-hotel/"+hotel?.id);
                   }}
                >
-                  <Image src={hotel.images[0]} width="100%" />
+                  <Image
+                     src={
+                        hotel.image
+                           ? "http://localhost:5000/" + hotel.image[0]
+                           : HotelImage1
+                     }
+                     width="100%"
+                  />
                   <div className="hotelier-hotels__name">
-                     <h4>{hotel.name}</h4>
+                     <h4
+                        className="two-line-restrict"
+                        style={{ height: "4rem" }}
+                     >
+                        {hotel.name}
+                     </h4>
                   </div>
                </Col>
             ))}
          </Row>
+
+         <div className="mt-3 home__pagination d-flex justify-content-center">
+            <PaginationControl
+               page={currentPage}
+               between={4}
+               total={pageTotal * 12}
+               // total={pageTotal}
+               limit={12}
+               changePage={(page) => {
+                  handleChangePage(page);
+                  setCurrentPage(page);
+               }}
+               ellipsis={1}
+            />
+         </div>
       </div>
    );
 };

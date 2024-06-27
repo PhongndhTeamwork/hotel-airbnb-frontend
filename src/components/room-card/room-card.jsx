@@ -6,7 +6,7 @@ import PriceIcon from "../../assets/icons/price-tag.png";
 import { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const RoomCard = ({ room }) => {
+const RoomCard = ({ room, id }) => {
    const [isFullImage, setIsFullImage] = useState(false);
 
    const navigate = useNavigate();
@@ -27,7 +27,7 @@ const RoomCard = ({ room }) => {
                }}
             >
                <Image
-                  src={room.images[0]}
+                  src={room?.images?.slice(0, 1)}
                   width="100%"
                   style={{ border: isFullImage ? "1px solid black" : "none" }}
                />
@@ -44,7 +44,7 @@ const RoomCard = ({ room }) => {
                      className="room-card__full-image"
                   >
                      <Image
-                        src={room.images[1]}
+                        src={room?.images?.slice(1, 2)}
                         width="100%"
                         style={{ border: "1px solid black" }}
                      />
@@ -59,7 +59,7 @@ const RoomCard = ({ room }) => {
                      className="room-card__full-image"
                   >
                      <Image
-                        src={room.images[2]}
+                        src={room?.images?.slice(2, 3)}
                         width="100%"
                         style={{
                            borderTopRightRadius: "0.5rem",
@@ -79,32 +79,32 @@ const RoomCard = ({ room }) => {
                   xxl={8}
                   className="room-card__body"
                   onClick={() => {
-                     navigate("/room/1");
+                     navigate("/room/" + id);
                   }}
                >
                   <div className="room-card__name one-line-restrict">
-                     <p className="mb-1">{room.name}</p>
+                     <p className="mb-1">{room?.name}</p>
                   </div>
                   <div className="room-card__description two-line-restrict">
-                     <p className="mb-1">{room.description}</p>
+                     <p className="mb-1">{room?.description}</p>
                   </div>
                   <div className="d-flex justify-content-between mt-3">
                      <div className="d-flex align-items-center">
                         <Image src={PriceIcon} width="24px" height="24px" />
-                        <p className="mb-0 ms-2">{room.price}</p>
+                        <p className="mb-0 ms-2">{room?.price}</p>
                      </div>
                      <div className="d-flex align-items-center">
                         <Image src={AreaIcon} width="24px" height="24px" />
-                        <p className="mb-0 ms-2">{room.area}</p>
+                        <p className="mb-0 ms-2">{room?.area}</p>
                      </div>
                   </div>
-                  <div className="room-card__rating mt-3">
+                  {/* <div className="room-card__rating mt-3">
                      <p className="mb-1">
                         {room.rating.toFixed(1)}/5.0 &nbsp; (&nbsp;
                         {room.comment}
                         {room.comment < 2 ? " comment )" : " comments )"}
                      </p>
-                  </div>
+                  </div> */}
                </Col>
             )}
          </Row>

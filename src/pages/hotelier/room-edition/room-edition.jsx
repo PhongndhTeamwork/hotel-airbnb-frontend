@@ -1,12 +1,13 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import "./room-edition.scss";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button, TextField } from "@mui/material/";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { PlusCircle, DashCircle } from "react-bootstrap-icons";
 import { Image } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const animatedComponents = makeAnimated();
 
@@ -153,17 +154,60 @@ const services = [
    },
 ];
 
+const types = [
+   {
+      value: 1,
+      label: 1,
+   },
+   {
+      value: 2,
+      label: 2,
+   },
+   {
+      value: 3,
+      label: 3,
+   },
+   {
+      value: 4,
+      label: 4,
+   },
+];
+
 const RoomEdition = () => {
    const { id } = useParams();
    const { userInformation } = useSelector((state) => state.userLogin);
+   const [searchParams] = useSearchParams();
+  const hotelId = searchParams.get('hotelId');
 
-   const config = {
-      headers: {
-         Authorization: `Bearer ${userInformation.token}`,
-         "Content-Type": "application/json",
-      },
-   };
+   const config = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+   }, [userInformation]);
 
+   const configFormData = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "multipart/form-data",
+         },
+      };
+   }, [userInformation]);
+
+   useEffect(() => {
+      if (!id) return;
+      axios
+         .get(`/get-room-detail/${id}`)
+         .then(({ data }) => {
+            console.log(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   });
 
    const [numberOfImage, setNumberOfImage] = useState(3);
    const [images, setImages] = useState([]);
@@ -186,14 +230,47 @@ const RoomEdition = () => {
       setImages(imagesTemp);
    };
 
-   const handleSubmit = () => {
-      
-   }
+   const handleSubmit = (e) => {
+      e.preventDefault();
+      axios
+      .post("/create-room/"+hotelId, room, config)
+      .then(({ data }) => {
+         for (var i = 0; i < images.length; i++) {
+            const formData = new FormData();
+            formData.append("image", images[i].file);
+            formData.append("imageType", 1);
 
-
+            // console.log(images[i].file);
+            console.log(data);
+            axios
+               .post("/create-image/" + data[0].id, formData, configFormData)
+               .then((response) => {
+                  // console.log(response);
+               })
+               .catch((error) => {
+                  console.error(error);
+               });
+         }
+      })
+      .then(() => {
+         console.log("Room added successfully");
+         setRoom({
+            name: "",
+            address: "",
+            star: 1,
+            description: "",
+            price: 0,
+         });
+         setImages([]);
+         alert("Room added successfully");
+      })
+      .catch((error) => {
+         console.error(error);
+      });
+   };
 
    return (
-      <div className="room-edition">
+      <form className="room-edition" onSubmit={handleSubmit}>
          <div className="room-edition__form">
             <h3>{id ? "Edit room" : "Add New Room"}</h3>
             <div className="room-edition__form-row my-4 w-100">
@@ -201,11 +278,12 @@ const RoomEdition = () => {
                   // id="outlined-basic"
                   label="Name"
                   variant="outlined"
+                  required
                   className="w-100"
                   size="small"
                   value={room?.name}
                   onChange={(e) => {
-                     setRoom({...room, name : e.target.value});
+                     setRoom({ ...room, name: e.target.value });
                   }}
                />
             </div>
@@ -218,12 +296,12 @@ const RoomEdition = () => {
                   size="small"
                   InputProps={{
                      inputProps: {
-                         step: 0.05, 
+                        step: 0.05,
                      },
-                 }}
+                  }}
                   value={room?.price}
                   onChange={(e) => {
-                     setRoom({...room, price : e.target.value});
+                     setRoom({ ...room, price: e.target.value });
                   }}
                />
                <TextField
@@ -234,11 +312,11 @@ const RoomEdition = () => {
                   size="small"
                   value={room?.area}
                   onChange={(e) => {
-                     setRoom({...room, area : e.target.value});
+                     setRoom({ ...room, area: e.target.value });
                   }}
                />
             </div>
-            <div className="room-edition__form-row my-4 w-100">
+            {/* <div className="room-edition__form-row my-4 w-100">
                <TextField
                   label="Description"
                   variant="outlined"
@@ -247,28 +325,18 @@ const RoomEdition = () => {
                   rows={4}
                   size="small"
                />
-            </div>
+            </div> */}
             <div className="room-edition__form-row my-4 w-100">
                <Select
                   className="room-edition__selector"
                   classNamePrefix="select"
                   name="type"
-                  options={[{ label: "single", value: "single" }]}
+                  options={types}
                   placeholder="Select type..."
-               />
-            </div>
-            <div className="room-edition__form-row my-4 w-100">
-               <Select
-                  className="room-edition__selector"
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
-                  // defaultValue={}
-                  isMulti
-                  options={services}
-                  onChange={() => {
-
+                  onChange={(e) => {
+                     setRoom({ ...room, star: e.value });
+                     // console.log(newHotel);
                   }}
-                  placeholder="Select services..."
                />
             </div>
             <div className="room-edition__form-row my-4 w-100">
@@ -306,7 +374,7 @@ const RoomEdition = () => {
                {Array(numberOfImage)
                   .fill(0)
                   .map((_, index) => (
-                     <div className="mt-4">
+                     <div className="mt-4" key={index}>
                         <div
                            className="room-edition__image-input d-flex justify-content-start"
                            key={index}
@@ -341,11 +409,16 @@ const RoomEdition = () => {
                      </div>
                   ))}
             </div>
-            <Button variant="contained" color="secondary" className="mt-4" onClick={handleSubmit}>
+            <Button
+               variant="contained"
+               color="secondary"
+               className="mt-4"
+               type="submit"
+            >
                Submit
             </Button>
          </div>
-      </div>
+      </form>
    );
 };
 

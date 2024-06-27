@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import "./room-detail.scss";
-import { Col, Image, Row } from "react-bootstrap";
+import { Button, Col, Form, Image, Row } from "react-bootstrap";
 
 import RoomImage1 from "../../../assets/images/room/room1.jpg";
 import RoomImage2 from "../../../assets/images/room/room2.jpg";
@@ -14,11 +14,12 @@ import RoomImage9 from "../../../assets/images/room/room9.jpg";
 import RoomImage10 from "../../../assets/images/room/room10.jpg";
 import RoomImage11 from "../../../assets/images/room/room11.jpg";
 import RoomImage12 from "../../../assets/images/room/room12.jpg";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, ChevronLeft } from "react-bootstrap-icons";
 import axios from "axios";
 
 import OrderCard from "../../../components/order-card/order-card";
+import { useSelector } from "react-redux";
 
 const roomInfo = {
    images: [
@@ -44,9 +45,22 @@ const roomInfo = {
    comment: 13,
 };
 
-
 const RoomDetail = () => {
    const { id } = useParams();
+   const [room, setRoom] = useState({});
+   const [fromDate, setFromDate] = useState();
+   const [toDate, setToDate] = useState();
+
+   const { userInformation } = useSelector((state) => state.userLogin);
+
+   const config = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+   }, [userInformation]);
 
    const movePixelSize = 250;
 
@@ -55,14 +69,17 @@ const RoomDetail = () => {
 
    const [serviceBodyWidth, setServiceBodyWidth] = useState(0);
    const [serviceItemsWidth, setServiceItemsWidth] = useState(0);
+   const [roomImages, setRoomImages] = useState([]);
 
-   const [mainImage1, setMainImage1] = useState(room.images[0]);
-   const [mainImage2, setMainImage2] = useState(room.images[1]);
+   const [mainImage1, setMainImage1] = useState(room?.images?.slice(0, 1));
+   const [mainImage2, setMainImage2] = useState(room?.images?.slice(1, 2));
 
    useEffect(() => {
       setServiceBodyWidth(imagesListWrapRef.current.offsetWidth);
       setServiceItemsWidth(imagesListRef.current.offsetWidth);
    }, [imagesListWrapRef, imagesListRef]);
+
+   useEffect(() => {});
 
    const handleClickLeftChevron = () => {
       const currentTranslateX = getTranslateX(imagesListRef.current);
@@ -102,19 +119,36 @@ const RoomDetail = () => {
       return 0; // Default to 0 if there's no transform
    };
 
-
-   const [room, setRoom] = useState({});
-
    useEffect(() => {
       axios
-         .get("/get-room-detail/"+id)
+         .get("/get-room-detail/" + id)
          .then(({ data }) => {
             console.log(data);
+            setRoom(data[0]);
          })
          .then((error) => {
             console.error(error);
          });
    }, [id]);
+
+   const handleBooking = () => {
+      axios
+         .post(
+            "/create-booking/" + id,
+            {
+               stayingDate: fromDate,
+               leavingDate: toDate,
+            },
+            config
+         )
+         .then(({ data }) => {
+            console.log(data);
+            alert("Booked successfully!");
+         })
+         .then((error) => {
+            console.error(error);
+         });
+   };
 
    return (
       <div className="room-detail">
@@ -164,12 +198,56 @@ const RoomDetail = () => {
             </div>
          </div>
          <div className="mt-5">
-            <Row>
+            {/* <Row>
                <Col xs={12} sm={12} md={6} lg={8} xl={8} xxl={8}></Col>
                <Col xs={12} sm={12} md={6} lg={4} xl={4} xxl={4}>
                   <OrderCard />
                </Col>
-            </Row>
+            </Row> */}
+            <div className="d-flex justify-content-center">
+               <p className="mx-5">Price : {room?.price}</p>
+               <p className="mx-5">Area : {room?.area}</p>
+            </div>
+            <div className="d-flex justify-content-center">
+               <div>
+                  <Form.Group
+                     className="mb-3 mx-4"
+                     controlId="exampleForm.ControlInput1"
+                  >
+                     <Form.Label>From</Form.Label>
+                     <Form.Control
+                        type="date"
+                        placeholder="name@example.com"
+                        onChange={(e) => {
+                           setFromDate(e.target.value);
+                        }}
+                     />
+                  </Form.Group>
+               </div>
+               <div>
+                  <Form.Group
+                     className="mb-3 mx-4"
+                     controlId="exampleForm.ControlInput1"
+                  >
+                     <Form.Label>To</Form.Label>
+                     <Form.Control
+                        type="date"
+                        placeholder="name@example.com"
+                        onChange={(e) => {
+                           setToDate(e.target.value);
+                        }}
+                     />
+                  </Form.Group>
+               </div>
+            </div>
+            <Button
+               className="mt-3"
+               onClick={() => {
+                  handleBooking();
+               }}
+            >
+               Book
+            </Button>
          </div>
       </div>
    );

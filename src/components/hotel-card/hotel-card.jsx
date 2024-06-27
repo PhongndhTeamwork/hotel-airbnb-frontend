@@ -3,15 +3,16 @@ import "./hotel-card.scss";
 import { Image, Carousel } from "react-bootstrap";
 import BlackStarIcon from "../../assets/icons/black-star.png";
 import RightArrowIcon from "../../assets/icons/right-arrow.png";
+import Image1 from "../../assets/images/tourist1.jpg";
 import { useNavigate } from "react-router-dom";
 
-const HotelCard = ({ hotel }) => {
+const HotelCard = ({ hotel, id }) => {
    const navigate = useNavigate();
 
    return (
       <div className="hotel-card">
          <div className="hotel-card__image">
-            <Carousel
+            {/* <Carousel
                interval={null}
                onClick={(e) => {
                   console.log(e.target.className.includes());
@@ -30,12 +31,13 @@ const HotelCard = ({ hotel }) => {
                      <Image src={image} width="100%" />
                   </Carousel.Item>
                ))}
-            </Carousel>
+            </Carousel> */}
+            <Image src={Image1} width="100%" />
          </div>
          <div
             className="hotel-card__body"
             onClick={() => {
-               navigate("/customer/hotel/1");
+               navigate("/hotel/"+id);
             }}
          >
             <p
@@ -56,10 +58,10 @@ const HotelCard = ({ hotel }) => {
                   </p>
                   <p className="mb-0">/day</p>
                </div>
-               <div className="hotel-card__rating d-flex align-items-center">
+               {/* <div className="hotel-card__rating d-flex align-items-center">
                   <p className="mb-0">{hotel.rating.toFixed(2)} &nbsp;</p>
                   <Image src={BlackStarIcon} width="20px" />
-               </div>
+               </div> */}
             </div>
          </div>
       </div>

@@ -1,8 +1,8 @@
 import "./hotel-detail.scss";
 
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Row, Col, Image, Button } from "react-bootstrap";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Row, Col, Image, Button, Form } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 
 import RoomImage1 from "../../../assets/images/room/room1.jpg";
@@ -25,9 +25,29 @@ import RoomCard from "../../../components/room-card/room-card";
 import { Avatar } from "@mui/material";
 import Amenity from "../../../components/amenity/amenity";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const HotelDetail = () => {
    const { id } = useParams();
+   const { userInformation } = useSelector((state) => state.userLogin);
+
+   const config = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+   }, [userInformation]);
+
+   // const configFormData = useMemo(() => {
+   //    return {
+   //       headers: {
+   //          Authorization: `Bearer ${userInformation?.token}`,
+   //          "Content-Type": "multipart/form-data",
+   //       },
+   //    };
+   // }, [userInformation]);
    const rooms = [
       {
          images: [RoomImage1, RoomImage6, RoomImage8],
@@ -79,36 +99,6 @@ const HotelDetail = () => {
          rating: 4.1,
          comment: 15,
       },
-      // {
-      //    images: [RoomImage6, RoomImage9, RoomImage1],
-      //    name: "Tellus id interdum velit",
-      //    description:
-      //       "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-      //    area: 12,
-      //    price: 200,
-      //    rating: 4.15,
-      //    comment: 23,
-      // },
-      // {
-      //    images: [RoomImage7, RoomImage5, RoomImage8],
-      //    name: "Tellus id interdum velit",
-      //    description:
-      //       "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-      //    area: 12,
-      //    price: 200,
-      //    rating: 4.3,
-      //    comment: 17,
-      // },
-      // {
-      //    images: [RoomImage8, RoomImage3, RoomImage10],
-      //    name: "Tellus id interdum velit",
-      //    description:
-      //       "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-      //    area: 12,
-      //    price: 200,
-      //    rating: 3.8,
-      //    comment: 1,
-      // },
    ];
 
    const amenities = [
@@ -123,24 +113,87 @@ const HotelDetail = () => {
    ];
 
    const [page, setPage] = useState(1);
+   const [hotelRooms, setHotelRooms] = useState([]);
 
    const [hotel, setHotel] = useState({});
    const [hotelImages, setHotelImages] = useState([]);
+   const [services, setServices] = useState([]);
+   const [feedback, setFeedback] = useState({
+      review: "",
+      rating: 5,
+   });
+   const [allFeedback, setAllFeedback] = useState([]);
+   // const [rooms, setRooms] = useState([]);
+
+   const getAllFeedback = useCallback(() => {
+      axios
+         .get(`/get-feedback/${id}?pageNumber=1&pageSize=1000`, config)
+         .then(({ data }) => {
+            console.log(data);
+            setAllFeedback(data.data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config, id]);
+
+   useEffect(() => {
+      axios
+         .get(`/get-room-as-customer/${id}?pageNumber=1&pageSize=1000`, config)
+         .then(({ data }) => {
+            console.log(data.data);
+           setHotelRooms(data.data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   },[config, id]);
+
+   useEffect(() => {
+      getAllFeedback();
+   }, [getAllFeedback]);
+
+   const handleFeedback = (e) => {
+      e.preventDefault();
+      axios
+         .post("/create-feedback/" + id, feedback, config)
+         .then(({ data }) => {
+            console.log(data);
+            setFeedback({
+               review: "",
+               rating: 5,
+            });
+            getAllFeedback();
+            alert("Submitted!");
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   };
 
    useEffect(() => {
       axios
          .get("/get-hotel-detail/" + id)
          .then(({ data }) => {
             console.log(data);
+            setHotel(data[0]);
          })
-         .then((error) => {
+         .catch((error) => {
             console.error(error);
          });
    }, [id]);
 
    useEffect(() => {
-      
-   })
+      axios
+         .get("/get-service-by-hotelier/" + id)
+         .then(({ data }) => {
+            // console.log(data);
+            setServices(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [id]);
 
    return (
       <div className="hotel-detail">
@@ -223,15 +276,8 @@ const HotelDetail = () => {
                      </div>
                   </div>
                   <div className="hotel-detail__description mt-4">
-                     <p className="text-start">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in
-                        reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur.
-                     </p>
+                     <p className="text-start">Name : {hotel?.name}</p>
+                     <p className="text-start">Address : {hotel?.address}</p>
                   </div>
                   <div className="hotel-detail__map mt-4">
                      <div
@@ -244,21 +290,43 @@ const HotelDetail = () => {
                      <h4 className="text-start">What this place offers</h4>
                      <Row>
                         <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-                           {amenities.slice(0, 4).map((amenity, index) => (
-                              <Amenity key={index} name={amenity} />
-                           ))}
+                           {services
+                              ?.slice(0, services?.length / 2)
+                              .map((amenity, index) => (
+                                 // <Amenity key={index} name={amenity} />
+                                 <div
+                                    key={index}
+                                    className="d-flex align-items-center"
+                                 >
+                                    <Image
+                                       src={`http://localhost:5000/${amenity.image_path}`}
+                                    />
+                                    <p className="mb-0 ms-4">{amenity.name}</p>
+                                 </div>
+                              ))}
                         </Col>
                         <Col xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-                           {amenities.slice(4, 8).map((amenity, index) => (
-                              <Amenity key={index} name={amenity} />
-                           ))}
+                           {services
+                              ?.slice(services?.length / 2, services.length - 1)
+                              .map((amenity, index) => (
+                                 // <Amenity key={index} name={amenity} />
+                                 <div
+                                    key={index}
+                                    className="d-flex align-items-center"
+                                 >
+                                    <Image
+                                       src={`http://localhost:5000/${amenity.image_path}`}
+                                    />
+                                    <p className="mb-0 ms-4">{amenity.name}</p>
+                                 </div>
+                              ))}
                         </Col>
                      </Row>
-                     <div className="d-flex justify-content-start mt-2">
+                     {/* <div className="d-flex justify-content-start mt-2">
                         <Button variant="outline-dark">
                            Show all 20 amenities
                         </Button>
-                     </div>
+                     </div> */}
                   </div>
                </Col>
                <Col
@@ -269,9 +337,10 @@ const HotelDetail = () => {
                   xl={6}
                   xxl={6}
                   className="hotel-detail__room-card"
+                  style={{ maxHeight: "80vh", overflow: "auto" }}
                >
                   <Row>
-                     {rooms.map((room, roomIndex) => (
+                     {hotelRooms.map((room, roomIndex) => (
                         <Col
                            xs={12}
                            sm={12}
@@ -282,10 +351,11 @@ const HotelDetail = () => {
                            key={roomIndex}
                            className="hotel-detail__room-card"
                         >
-                           <RoomCard room={room} />
+                           <RoomCard room={room} id={room.id}/>
                         </Col>
                      ))}
-                     <div className="mt-3 hotel-detail_pagination d-flex justify-content-center">
+
+                     {/* <div className="mt-3 hotel-detail_pagination d-flex justify-content-center">
                         <PaginationControl
                            page={page}
                            between={4}
@@ -296,11 +366,59 @@ const HotelDetail = () => {
                            }}
                            ellipsis={1}
                         />
-                     </div>
+                     </div> */}
                   </Row>
                </Col>
             </Row>
          </div>
+         <div className="hotel-detail__feedback">
+            <h4>Feedback</h4>
+            <hr />
+            {allFeedback.map((feedback) => (
+               <Fragment>
+                  <div className="d-flex justify-content-start flex-column align-items-start">
+                     <p>Rating : {feedback.rating}</p>
+                     <div>{feedback.review}</div>
+                  </div>
+                  <hr />
+               </Fragment>
+            ))}
+         </div>
+
+         <Form
+            className="hotel-detail__feedback-form mt-5"
+            onSubmit={handleFeedback}
+         >
+            <h4>Your Feedback</h4>
+            <hr />
+            <Form.Group className="mb-3 text-start">
+               <Form.Label className="text-start">Rating</Form.Label>
+               <Form.Control
+                  type="number"
+                  required
+                  min={1}
+                  max={5}
+                  value={feedback?.rating}
+                  onChange={(e) => {
+                     setFeedback({ ...feedback, rating: e.target.value });
+                  }}
+               />
+            </Form.Group>
+            <Form.Group className="mb-3 text-start">
+               <Form.Label className="text-start">Review</Form.Label>
+               <Form.Control
+                  type="text"
+                  required
+                  value={feedback?.review}
+                  onChange={(e) => {
+                     setFeedback({ ...feedback, review: e.target.value });
+                  }}
+               />
+            </Form.Group>
+            <div>
+               <Button type="submit">Submit</Button>
+            </div>
+         </Form>
       </div>
    );
 };

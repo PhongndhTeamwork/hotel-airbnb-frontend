@@ -1,6 +1,7 @@
 import "./user-list.scss";
 import { MDBTable, MDBTableHead, MDBTableBody } from "mdb-react-ui-kit";
 import { Button } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const users = [
@@ -50,6 +51,16 @@ const users = [
 
 const UserList = () => {
    const navigate = useNavigate();
+   const { userInformation } = useSelector((state) => state.userLogin);
+
+   const config = {
+      headers: {
+         Authorization: `Bearer ${userInformation?.token}`,
+         "Content-Type": "application/json",
+      },
+   };
+
+
    return (
       <div className="user-list">
          <Button

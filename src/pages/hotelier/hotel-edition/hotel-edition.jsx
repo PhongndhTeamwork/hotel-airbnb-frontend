@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./hotel-edition.scss";
 import { Button, TextField } from "@mui/material/";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { PlusCircle, DashCircle } from "react-bootstrap-icons";
-import { Col, Image, Row } from "react-bootstrap";
+import { Col, Form, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import RoomImage1 from "../../../assets/images/room/room1.jpg";
 import RoomImage2 from "../../../assets/images/room/room2.jpg";
@@ -20,151 +20,152 @@ import RoomImage11 from "../../../assets/images/room/room11.jpg";
 import RoomImage12 from "../../../assets/images/room/room12.jpg";
 import AvatarImage from "../../../assets/images/tourist2.jpg";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const animatedComponents = makeAnimated();
 
-const services = [
-   {
-      value: "City skyline view",
-      label: "City skyline view",
-   },
-   {
-      value: "Courtyard view",
-      label: "Courtyard view",
-   },
-   {
-      value: "Mountain view",
-      label: "Mountain view",
-   },
-   {
-      value: "Cleaning products",
-      label: "Cleaning products",
-   },
-   {
-      value: "Shampoo",
-      label: "Shampoo",
-   },
-   {
-      value: "Free dryer",
-      label: "Free dryer",
-   },
-   {
-      value: "Hangers",
-      label: "Hangers",
-   },
-   {
-      value: "Bed linens",
-      label: "Bed linens",
-   },
-   {
-      value: "Ethernet connection",
-      label: "Ethernet connection",
-   },
-   {
-      value: "Exercise equipment",
-      label: "Exercise equipment",
-   },
-   {
-      value: "Books and reading material",
-      label: "Books and reading material",
-   },
-   {
-      value: "Clothing storage",
-      label: "Clothing storage",
-   },
-   {
-      value: "Ceiling fan",
-      label: "Ceiling fan",
-   },
-   {
-      value: "Portable fans",
-      label: "Portable fans",
-   },
-   {
-      value: "Exterior security cameras",
-      label: "Exterior security cameras",
-   },
-   {
-      value: "Fire extinguisher",
-      label: "Fire extinguisher",
-   },
-   {
-      value: "First aid kit",
-      label: "First aid kit",
-   },
-   {
-      value: "Wifi",
-      label: "Wifi",
-   },
-   {
-      value: "Dedicated workspace",
-      label: "Dedicated workspace",
-   },
-   {
-      value: "Kitchen",
-      label: "Kitchen",
-   },
-   {
-      value: "Refrigerator",
-      label: "Refrigerator",
-   },
-   {
-      value: "Microwave",
-      label: "Microwave",
-   },
-   {
-      value: "Stove",
-      label: "Stove",
-   },
-   {
-      value: "Dedicated workspace",
-      label: "Dedicated workspace",
-   },
-   {
-      value: "Toaster",
-      label: "Toaster",
-   },
-   {
-      value: "Free parking on premises",
-      label: "Free parking on premises",
-   },
-   {
-      value: "Barbecue utensils",
-      label: "Barbecue utensils",
-   },
-   {
-      value: "Shared pool",
-      label: "Shared pool",
-   },
-   {
-      value: "EV charger",
-      label: "EV charger",
-   },
-   {
-      value: "Pets allowed",
-      label: "Pets allowed",
-   },
-   {
-      value: "Breakfast Buffet",
-      label: "Breakfast Buffet",
-   },
-   {
-      value: "Smoking allowed",
-      label: "Smoking allowed",
-   },
-   {
-      value: "Cleaning available during stay",
-      label: "Cleaning available during stay",
-   },
-   {
-      value: "Iron",
-      label: "Iron",
-   },
-   {
-      value: "Hot water kettle",
-      label: "Hot water kettle",
-   },
-];
+// const services = [
+//    {
+//       value: "City skyline view",
+//       label: "City skyline view",
+//    },
+//    {
+//       value: "Courtyard view",
+//       label: "Courtyard view",
+//    },
+//    {
+//       value: "Mountain view",
+//       label: "Mountain view",
+//    },
+//    {
+//       value: "Cleaning products",
+//       label: "Cleaning products",
+//    },
+//    {
+//       value: "Shampoo",
+//       label: "Shampoo",
+//    },
+//    {
+//       value: "Free dryer",
+//       label: "Free dryer",
+//    },
+//    {
+//       value: "Hangers",
+//       label: "Hangers",
+//    },
+//    {
+//       value: "Bed linens",
+//       label: "Bed linens",
+//    },
+//    {
+//       value: "Ethernet connection",
+//       label: "Ethernet connection",
+//    },
+//    {
+//       value: "Exercise equipment",
+//       label: "Exercise equipment",
+//    },
+//    {
+//       value: "Books and reading material",
+//       label: "Books and reading material",
+//    },
+//    {
+//       value: "Clothing storage",
+//       label: "Clothing storage",
+//    },
+//    {
+//       value: "Ceiling fan",
+//       label: "Ceiling fan",
+//    },
+//    {
+//       value: "Portable fans",
+//       label: "Portable fans",
+//    },
+//    {
+//       value: "Exterior security cameras",
+//       label: "Exterior security cameras",
+//    },
+//    {
+//       value: "Fire extinguisher",
+//       label: "Fire extinguisher",
+//    },
+//    {
+//       value: "First aid kit",
+//       label: "First aid kit",
+//    },
+//    {
+//       value: "Wifi",
+//       label: "Wifi",
+//    },
+//    {
+//       value: "Dedicated workspace",
+//       label: "Dedicated workspace",
+//    },
+//    {
+//       value: "Kitchen",
+//       label: "Kitchen",
+//    },
+//    {
+//       value: "Refrigerator",
+//       label: "Refrigerator",
+//    },
+//    {
+//       value: "Microwave",
+//       label: "Microwave",
+//    },
+//    {
+//       value: "Stove",
+//       label: "Stove",
+//    },
+//    {
+//       value: "Dedicated workspace",
+//       label: "Dedicated workspace",
+//    },
+//    {
+//       value: "Toaster",
+//       label: "Toaster",
+//    },
+//    {
+//       value: "Free parking on premises",
+//       label: "Free parking on premises",
+//    },
+//    {
+//       value: "Barbecue utensils",
+//       label: "Barbecue utensils",
+//    },
+//    {
+//       value: "Shared pool",
+//       label: "Shared pool",
+//    },
+//    {
+//       value: "EV charger",
+//       label: "EV charger",
+//    },
+//    {
+//       value: "Pets allowed",
+//       label: "Pets allowed",
+//    },
+//    {
+//       value: "Breakfast Buffet",
+//       label: "Breakfast Buffet",
+//    },
+//    {
+//       value: "Smoking allowed",
+//       label: "Smoking allowed",
+//    },
+//    {
+//       value: "Cleaning available during stay",
+//       label: "Cleaning available during stay",
+//    },
+//    {
+//       value: "Iron",
+//       label: "Iron",
+//    },
+//    {
+//       value: "Hot water kettle",
+//       label: "Hot water kettle",
+//    },
+// ];
 
 const rooms = [
    {
@@ -249,16 +250,154 @@ const rooms = [
    // },
 ];
 
+const stars = [
+   {
+      value: 1,
+      label: 1,
+   },
+   {
+      value: 2,
+      label: 2,
+   },
+   {
+      value: 3,
+      label: 3,
+   },
+   {
+      value: 4,
+      label: 4,
+   },
+   {
+      value: 5,
+      label: 5,
+   },
+];
+
 const HotelEdition = () => {
    const [location, setLocation] = useState("");
    const { id } = useParams();
    const navigate = useNavigate();
    const formRef = useRef();
 
+   const { error, loading, userInformation } = useSelector(
+      (state) => state.userLogin
+   );
+
+   const [services, setServices] = useState([]);
+
+   const config = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+   }, [userInformation]);
+
+   const configFormData = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "multipart/form-data",
+         },
+      };
+   }, [userInformation]);
+
    const [numberOfImage, setNumberOfImage] = useState(3);
    const [images, setImages] = useState([]);
 
    const [hotel, setHotel] = useState({});
+   const [hotelServices, setHotelServices] = useState([]);
+   const [remainServices, setRemainServices] = useState([]);
+   const [hotelImages, setHotelImages] = useState([]);
+   const [newImage, setNewImage] = useState([]);
+
+   const [hotelRooms, setHotelRooms] = useState([]);
+
+   useEffect(() => {
+      axios
+         .get(`/get-room/${id}?pageNumber=1&pageSize=1000`, config)
+         .then(({ data }) => {
+            console.log(data.data);
+           setHotelRooms(data.data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   },[config, id]);
+
+
+   useEffect(() => {
+      axios
+         .get("/get-service", config)
+         .then(({ data }) => {
+            // console.log(data);
+            setServices(
+               data?.map((service) => {
+                  return {
+                     value: service.id,
+                     label: service.name,
+                  };
+               })
+            );
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config]);
+
+   const getHotelInfo = useCallback(() => {
+      axios
+         .get(`/get-service-by-hotelier/${id}`, config)
+         .then(({ data }) => {
+            console.log(data);
+            setHotelServices(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config, id]);
+
+   useState(() => {
+      axios
+         .get(`/get-image/${id}?imageType=0`, config)
+         .then(({ data }) => {
+            console.log(data);
+            setHotelImages(data);
+            setImages(data);
+            setNumberOfImage(data.length);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, []);
+
+   useEffect(() => {
+      axios
+         .get(`/get-image/${id}?imageType=0`, config)
+         .then(({ data }) => {
+            console.log(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config, id]);
+
+   useEffect(() => {
+      axios
+         .get(`/get-hotel-detail/${id}`, config)
+         .then(({ data }) => {
+            console.log(data);
+            setHotel(data[0]);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config, hotel?.star, id]);
+
+   useEffect(() => {
+      getHotelInfo();
+   }, [getHotelInfo]);
 
    // useEffect(() => {
    //    axios
@@ -271,26 +410,98 @@ const HotelEdition = () => {
 
    const handleChangeImage = (e, index) => {
       const file = e.target.files[0];
-      let imagesTemp = [...images];
-      if (!imagesTemp[index]) {
-         imagesTemp[index] = {};
-      }
       if (file) {
          const imageURL = URL.createObjectURL(file);
-         if (!imagesTemp[index].image) {
-            imagesTemp[index].image = "";
-         }
-         imagesTemp[index].image = imageURL;
+         setNewImage({
+            path: imageURL,
+            file: file,
+         });
       }
-      imagesTemp[index].file = file;
-      setImages(imagesTemp);
+      // imagesTemp[index].file = file;
+      // setImages(imagesTemp);
    };
-
-   useEffect(() => {}, []);
 
    const handleUpdateHotel = () => {
       console.log(images);
       console.log(hotel);
+   };
+
+   const handleUpdateBasicInformation = () => {
+      let hotelInfoRequest = { ...hotel };
+      delete hotelInfoRequest.services;
+      axios
+         .put(`/update-hotel/${id}`, hotelInfoRequest, config)
+         .then(() => {
+            getHotelInfo();
+            alert("Update basic information successfully!");
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   };
+
+   const handleUpdateService = () => {
+      for (var i = 0; i < hotelServices.length; i++) {
+         axios
+            .post(
+               "/delete-service-by-hotelier/" + id,
+               { serviceId: hotelServices[i].id },
+               config
+            )
+            .then((response) => {
+               console.log(response);
+            })
+            .catch((error) => {
+               console.error(error);
+            });
+      }
+
+      // const serviceRequest = hotel.services?.map((service) => service.value);
+      // for (var j = 0; j < serviceRequest.length; j++) {
+      //    axios
+      //       .post(
+      //          "/add-service/" + id,
+      //          { serviceId: serviceRequest[j] },
+      //          config
+      //       )
+      //       .then((response) => {
+      //          console.log(response);
+      //       })
+      //       .catch((error) => {
+      //          console.error(error);
+      //       });
+      // }
+   };
+
+   const handleRemoveImage = (imageId) => {
+      let isConfirm = window.confirm(
+         "Are you sure you want to delete this image?"
+      );
+      if (!isConfirm) return;
+      axios
+         .delete(`/delete-image/${id}?imageType=0`, config)
+         .then((response) => {
+            console.log(response);
+            getHotelInfo();
+            alert("Delete image successfully");
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   };
+
+   const handleAddImage = () => {
+      const formData = new FormData();
+               formData.append("image", newImage?.file);
+               formData.append("imageType", 0);
+               axios
+               .post("/create-image/" + id, formData, configFormData)
+               .then((response) => {
+                  // console.log(response);
+               })
+               .catch((error) => {
+                  console.error(error);
+               });
    };
 
    return (
@@ -299,59 +510,65 @@ const HotelEdition = () => {
             <Col xs={12} sm={12} md={12} lg={6} xl={7} xxl={7}>
                <div className="hotel-edition__form" ref={formRef}>
                   <h3>Edit Hotel</h3>
-                  <div className="hotel-edition__form-row my-4 w-100">
-                     <TextField
-                        // id="outlined-basic"
-                        label="Name"
-                        variant="outlined"
-                        className="w-100"
-                        size="small"
-                        value={hotel?.name}
-                        onChange={(e) => {
-                           setHotel({ ...hotel, name: e.target.value });
-                        }}
-                     />
+                  <div className="hotel-edition__form-row my-4 w-100 text-start">
+                     <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                     >
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                           type="text"
+                           value={hotel?.name}
+                           onChange={(e) => {
+                              setHotel({ ...hotel, name: e.target.value });
+                           }}
+                        />
+                     </Form.Group>
                   </div>
-                  <div className="hotel-edition__form-row my-4 w-100">
-                     <TextField
-                        label="Description"
-                        variant="outlined"
-                        multiline
-                        className="w-100"
-                        rows={4}
-                        size="small"
-                        value={hotel?.description}
-                        onChange={(e) => {
-                           setHotel({ ...hotel, description: e.target.value });
-                        }}
-                     />
+                  <div className="hotel-edition__form-row my-4 w-100 text-start">
+                     <Form.Group className="mb-3">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control
+                           type="text"
+                           multiple
+                           className="w-100"
+                           rows={4}
+                           value={hotel?.description}
+                           onChange={(e) => {
+                              setHotel({
+                                 ...hotel,
+                                 description: e.target.value,
+                              });
+                           }}
+                        />
+                     </Form.Group>
                   </div>
-                  <div className="hotel-edition__form-row my-4 w-100">
-                     <TextField
-                        label="Address"
-                        variant="outlined"
-                        className="w-100"
-                        size="small"
-                        value={hotel?.address}
-                        onChange={(e) => {
-                           setHotel({ ...hotel, address: e.target.value });
-                        }}
-                     />
+                  <div className="hotel-edition__form-row my-4 w-100 text-start">
+                     <Form.Group className="mb-3">
+                        <Form.Label>Address</Form.Label>
+                        <Form.Control
+                           type="text"
+                           multiple
+                           value={hotel?.address}
+                           onChange={(e) => {
+                              setHotel({ ...hotel, address: e.target.value });
+                           }}
+                        />
+                     </Form.Group>
                   </div>
-                  <div className="hotel-edition__form-row hotel-edition_location my-4 w-100">
-                     <TextField
-                        label="Location"
-                        variant="outlined"
-                        className="w-100"
-                        size="small"
-                        // multiline
-                        // rows={4}
-                        value={hotel?.location}
-                        onChange={(e) => {
-                           setLocation(e.target.value);
-                           setHotel({ ...hotel, location: e.target.value });
-                        }}
-                     />
+                  <div className="hotel-edition__form-row hotel-edition_location my-4 w-100 text-start">
+                     <Form.Group className="mb-3">
+                        <Form.Label>Location</Form.Label>
+                        <Form.Control
+                           type="text"
+                           multiple
+                           value={hotel?.location}
+                           onChange={(e) => {
+                              setLocation(e.target.value);
+                              setHotel({ ...hotel, location: e.target.value });
+                           }}
+                        />
+                     </Form.Group>
                      {location.includes("iframe") && (
                         <div
                            className="w-50 my-3"
@@ -359,12 +576,51 @@ const HotelEdition = () => {
                         ></div>
                      )}
                   </div>
+                  <div className="d-flex justify-content-between text-start w-100">
+                     <Form.Group className="mb-3">
+                        <Form.Label>Price</Form.Label>
+                        <Form.Control
+                           type="number"
+                           value={hotel?.price}
+                           step={0.01}
+                           onChange={(e) => {
+                              setHotel({ ...hotel, price: e.target.value });
+                           }}
+                        />
+                     </Form.Group>
+                  </div>
+                  <div className="d-flex justify-content-between mt-4">
+                     <Select
+                        className="hotel-addition__selector w-50 me-3"
+                        closeMenuOnSelect={true}
+                        components={animatedComponents}
+                        required
+                        defaultValue={stars.find(
+                           (star) => star.value === hotel?.star
+                        )}
+                        options={stars}
+                        onChange={(e) => {
+                           setHotel({ ...hotel, star: e.value });
+                           // console.log(newHotel);
+                        }}
+                        placeholder="Select star..."
+                     />
+                  </div>
+                  <div>
+                     <Button
+                        variant="contained"
+                        color="secondary"
+                        className="mt-3"
+                        onClick={handleUpdateBasicInformation}
+                     >
+                        Update basic information
+                     </Button>
+                  </div>
                   <div className="hotel-edition__form-row my-4 w-100">
                      <Select
                         className="hotel-edition__selector"
                         closeMenuOnSelect={false}
                         components={animatedComponents}
-                        // defaultValue={hotel?.services}
                         isMulti
                         options={services}
                         onChange={(e) => {
@@ -377,84 +633,64 @@ const HotelEdition = () => {
                      variant="contained"
                      color="secondary"
                      className="mt-2 mb-4"
-                     onClick={handleUpdateHotel}
+                     onClick={handleUpdateService}
                   >
-                     Submit
+                     Update service
                   </Button>
                   <hr />
                   <div className="hotel-edition__form-row my-4 w-100">
-                     <div className="d-flex hotel-edition__image-button">
-                        <Button
-                           variant="outlined"
-                           color="success"
-                           className="d-flex align-items-center justify-content-start"
-                           onClick={() => {
-                              setNumberOfImage((prev) => prev + 1);
-                           }}
-                        >
-                           <div className="d-flex align-items-center justify-content-start">
-                              <PlusCircle></PlusCircle> &nbsp;
-                              <p className="mb-0 ms-2">Add Image</p>
-                           </div>
-                        </Button>
-                        <Button
-                           variant="outlined"
-                           color="warning"
-                           className="ms-3 d-flex align-items-center justify-content-start"
-                           onClick={() => {
-                              if (images[numberOfImage - 1]) {
-                                 images.splice(numberOfImage - 1, 1);
-                              }
-                              setNumberOfImage((prev) =>
-                                 prev > 3 ? prev - 1 : prev
-                              );
-                           }}
-                        >
-                           <DashCircle></DashCircle>
-                           <p className="mb-0 ms-2">Remove Last Image</p>
-                        </Button>
-                     </div>
-                     {Array(numberOfImage)
-                        .fill(0)
-                        .map((_, index) => (
-                           <div className="mt-4">
-                              <div
-                                 className="hotel-edition__image-input d-flex justify-content-start"
-                                 key={index}
-                              >
-                                 <Button variant="contained" component="label">
-                                    Upload Image
-                                    <input
-                                       type="file"
-                                       hidden
-                                       onChange={(e) => {
-                                          handleChangeImage(e, index);
-                                       }}
-                                       accept="image/png, image/gif, image/jpeg"
-                                    />
-                                 </Button>
-                                 <TextField
-                                    variant="outlined"
-                                    value={images[index]?.image}
-                                    // label="Selected File"
-                                    size="small"
-                                    InputProps={{
-                                       readOnly: true,
-                                    }}
-                                    className="ms-3 w-75"
-                                 />
-                              </div>
-                              {images[index]?.image && (
-                                 <div className="hotel-edition__image w-50 mt-3">
-                                    <Image
-                                       src={images[index]?.image}
-                                       width="100%"
-                                    />
-                                 </div>
-                              )}
-                           </div>
-                        ))}
+                     {hotelImages?.map((image, index) => (
+                        <div className="w-100" key={index}>
+                           <Button
+                              color="warning"
+                              variant="contained"
+                              className="me-4"
+                              onClick={() => {
+                                 handleRemoveImage(image.id);
+                              }}
+                           >
+                              Remove
+                           </Button>
+                           <Image
+                              src={`http://localhost:5000/` + image.image_path}
+                              className="w-50"
+                           />
+                           <hr />
+                        </div>
+                     ))}
                   </div>
+                  <div>
+                     <Form.Group
+                        className="mb-3 text-start"
+                        controlId="exampleForm.ControlInput1"
+                     >
+                        <Form.Label>Add Image</Form.Label>
+                        <Form.Control
+                           type="file"
+                           onChange={(e) => {
+                              handleChangeImage(e);
+                           }}
+                           accept="image/png, image/gif, image/jpeg"
+                        />
+                     </Form.Group>
+                     <Button
+                        variant="contained"
+                        color="secondary"
+                        className="mt-2 mb-4"
+                        onClick={handleAddImage}
+                     >
+                        Add image
+                     </Button>
+                  </div>
+
+                  {/* <Button
+                     variant="contained"
+                     color="secondary"
+                     className="mt-2 mb-4"
+                     onClick={handleUpdateImage}
+                  >
+                     Update image
+                  </Button> */}
                </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={6} xl={5} xxl={5}>
@@ -463,16 +699,16 @@ const HotelEdition = () => {
                   color="success"
                   className="d-flex align-items-center px-4"
                   onClick={() => {
-                     navigate("/hotelier/add-room");
+                     navigate("/hotelier/add-room?hotelId=" + id);
                   }}
                >
                   <PlusCircle size="20px" /> &nbsp; Add New Room
                </Button>
                <div className="hotel-edition__room-list">
-                  {rooms.map((room, index) => (
+                  {hotelRooms?.map((room, index) => (
                      <div key={index} className="hotel-edition__room my-3">
                         <div className="hotel-edition__room-image">
-                           <Image src={room.images[0]} width="100%" />
+                           <Image src={room?.images?.slice(0,1)} width="100%" />
                         </div>
                         <div
                            className="hotel-edition__room-info text-start"
@@ -480,13 +716,13 @@ const HotelEdition = () => {
                               navigate("/hotelier/edit-room/1");
                            }}
                         >
-                           <h4 className="one-line-restrict">{room.name}</h4>
+                           <h4 className="one-line-restrict">{room?.name}</h4>
                            <p className="two-line-restrict">
-                              {room.description}
+                              {room?.description}
                            </p>
                            <div className="d-flex justify-content-between pe-3">
-                              <p>${room.price}</p>
-                              <p>{room.rating}/5.0</p>
+                              <p>${room?.price}</p>
+                              <p>Area : {room?.area}</p>
                            </div>
                         </div>
                      </div>
