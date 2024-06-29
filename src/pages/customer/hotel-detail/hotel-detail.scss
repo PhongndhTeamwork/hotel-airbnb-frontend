@@ -83,13 +83,24 @@
       }
    }
 
-   .hotel-detail__feedback {
-      background-color: black;
-      color: white;
-      padding: 2rem;
+   .hotel-detail__feedback-container {
+      border: 1px solid green;
       border-radius: 0.5rem;
-      max-height: 60vh;
-      overflow: auto;
+      padding: 1rem;
+
+      .hotel-detail__feedback {
+         padding: 2rem;
+         border-radius: 0.5rem;
+         max-height: 60vh;
+         overflow: auto;
+         width: 70%
+      }
+
+      .hotel-detail__feedback-form {
+         width: 30%;
+      }
    }
+
+
 
 }

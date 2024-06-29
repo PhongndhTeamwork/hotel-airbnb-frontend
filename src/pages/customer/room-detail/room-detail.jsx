@@ -171,6 +171,7 @@ const RoomDetail = () => {
          .then(({ data }) => {
             console.log(data);
             alert("Booked successfully!");
+            navigate("/booked")
          })
          .then((error) => {
             console.error(error);

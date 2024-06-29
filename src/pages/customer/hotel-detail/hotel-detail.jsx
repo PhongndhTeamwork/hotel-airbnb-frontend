@@ -26,6 +26,8 @@ import { Avatar } from "@mui/material";
 import Amenity from "../../../components/amenity/amenity";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import RatingStar from "../../../components/rating-star/rating-star";
+import { Person, PersonCircle } from "react-bootstrap-icons";
 
 const HotelDetail = () => {
    const { id } = useParams();
@@ -349,7 +351,7 @@ const HotelDetail = () => {
                      lg={3}
                      xl={3}
                      xxl={3}
-                     className=""
+                     className="mb-3"
                   >
                      <Image
                         src={`http://localhost:5000/${image.image_path}`}
@@ -360,55 +362,66 @@ const HotelDetail = () => {
                ))}
             </Row>
          </div>
-
-         <div className="hotel-detail__feedback mt-5">
+         <div className="mt-5 hotel-detail__feedback-container">
             <h4>Feedback</h4>
             <hr />
-            {allFeedback.map((feedback) => (
-               <Fragment>
-                  <div className="d-flex justify-content-start flex-column align-items-start">
-                     <p>Rating : {feedback.rating}</p>
-                     <div>{feedback.review}</div>
-                  </div>
-                  <hr />
-               </Fragment>
-            ))}
-         </div>
+            <div className="d-flex hotel-detail__feedback-wrap">
+               <div className="hotel-detail__feedback mt-2 me-4">
+                  {allFeedback.map((feedback, index) => (
+                     <div key={index}>
+                        <div className="d-flex justify-content-center flex-column">
+                           <div className="d-flex align-items-center justify-content-between">
+                              <div className="d-flex align-items-center">
+                                 <PersonCircle size="30px" />
+                                 <p className="mb-0 ms-2">{feedback.name}</p>
+                              </div>
+                              <RatingStar rating={feedback.rating} />
+                           </div>
+                           <div className="text-start ms-5 mt-2 d-flex justify-content-start" style={{color : "grey"}}>
+                              {feedback.review}
+                           </div>
+                        </div>
+                        <hr />
+                     </div>
+                  ))}
+               </div>
 
-         <Form
-            className="hotel-detail__feedback-form mt-5"
-            onSubmit={handleFeedback}
-         >
-            <h4>Your Feedback</h4>
-            <hr />
-            <Form.Group className="mb-3 text-start">
-               <Form.Label className="text-start">Rating</Form.Label>
-               <Form.Control
-                  type="number"
-                  required
-                  min={1}
-                  max={5}
-                  value={feedback?.rating}
-                  onChange={(e) => {
-                     setFeedback({ ...feedback, rating: e.target.value });
-                  }}
-               />
-            </Form.Group>
-            <Form.Group className="mb-3 text-start">
-               <Form.Label className="text-start">Review</Form.Label>
-               <Form.Control
-                  type="text"
-                  required
-                  value={feedback?.review}
-                  onChange={(e) => {
-                     setFeedback({ ...feedback, review: e.target.value });
-                  }}
-               />
-            </Form.Group>
-            <div>
-               <Button type="submit">Submit</Button>
+               <Form
+                  className="hotel-detail__feedback-form mt-2 ms-4"
+                  onSubmit={handleFeedback}
+               >
+                  <Form.Group className="mb-3 text-start">
+                     <Form.Label className="text-start">Rating</Form.Label>
+                     <Form.Control
+                        type="number"
+                        required
+                        min={1}
+                        max={5}
+                        value={feedback?.rating}
+                        onChange={(e) => {
+                           setFeedback({ ...feedback, rating: e.target.value });
+                        }}
+                     />
+                  </Form.Group>
+                  <Form.Group className="mb-3 text-start">
+                     <Form.Label className="text-start">Review</Form.Label>
+                     <Form.Control
+                        type="text"
+                        as="textarea"
+                        rows={4}
+                        required
+                        value={feedback?.review}
+                        onChange={(e) => {
+                           setFeedback({ ...feedback, review: e.target.value });
+                        }}
+                     />
+                  </Form.Group>
+                  <div>
+                     <Button type="submit">Submit</Button>
+                  </div>
+               </Form>
             </div>
-         </Form>
+         </div>
       </div>
    );
 };

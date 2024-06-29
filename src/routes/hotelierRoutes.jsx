@@ -6,6 +6,7 @@ import HotelEdition from "../pages/hotelier/hotel-edition/hotel-edition";
 import HotelAddition from "../pages/hotelier/hotel-addition/hotel-addition";
 import RoomAddition from "../pages/hotelier/room-addition/room-addition";
 import RoomEdition from "../pages/hotelier/room-edition/room-edition";
+import BookedRoom from "../pages/hotelier/booked-room/booked-room";
 
 
 const HotelierRoutes = () => {
@@ -14,6 +15,7 @@ const HotelierRoutes = () => {
          <Routes>
             <Route path="/hotels" element={<Hotels />} />
             <Route path="/rooms" element={<Rooms />} />
+            <Route path="/booked" element={<BookedRoom />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/add-hotel" element={<HotelAddition />} />
             <Route path="/edit-hotel/:id" element={<HotelEdition />} />

@@ -199,7 +199,7 @@ const HotelAddition = () => {
       price: 0,
    });
 
-   const { error, loading, userInformation } = useSelector(
+   const { userInformation } = useSelector(
       (state) => state.userLogin
    );
    // const [isHouseAdded, setIsHouseAdded] = useState(false);
@@ -278,7 +278,7 @@ const HotelAddition = () => {
       e.preventDefault();
       if (!userInformation) return;
       const serviceRequest = newHotel.services?.map((service) => service.value);
-      delete newHotel.location;
+      // delete newHotel.location;
       delete newHotel.services;
 
       axios
@@ -293,7 +293,7 @@ const HotelAddition = () => {
                   .post("/create-image/" + data.id, formData, configFormData)
                   .then((response) => {
                      // console.log(response);
-                     alert("Create hotel successfully");
+                     // alert("Create hotel successfully");
                      navigate("/hotelier/hotels");
                   })
                   .catch((error) => {

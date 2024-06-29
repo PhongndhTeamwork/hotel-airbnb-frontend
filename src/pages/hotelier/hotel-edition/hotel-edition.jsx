@@ -247,8 +247,9 @@ const HotelEdition = () => {
       axios
          .get(`/get-hotel-detail/${id}`, config)
          .then(({ data }) => {
-            console.log(data);
+            // console.log(data);
             setHotel(data[0]);
+            setLocation(data[0]?.location);
          })
          .catch((error) => {
             console.error(error);
@@ -451,7 +452,7 @@ const HotelEdition = () => {
                            }}
                         />
                      </Form.Group>
-                     {location.includes("iframe") && (
+                     {location?.includes("iframe") && (
                         <div
                            className="w-50 my-3"
                            dangerouslySetInnerHTML={{ __html: location }}

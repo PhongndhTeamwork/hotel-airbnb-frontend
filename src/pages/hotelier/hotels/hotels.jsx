@@ -73,7 +73,7 @@ const Hotels = () => {
             }
          })
          .then((error) => {
-            console.error(error);
+            // console.error(error);
          });
    }, [config]);
 

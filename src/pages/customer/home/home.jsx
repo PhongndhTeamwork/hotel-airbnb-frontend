@@ -169,13 +169,12 @@ const Home = () => {
    // }, [config, userInformation]);
 
    useEffect(() => {
-      if (!userInformation) return;
+      // if (!userInformation) return;
       // if(!isClickSearch) return;
       setHotels([]);
       axios
          .get(
             `/get-hotel-as-customer?stayingDate=${searchInfo.stayingDate}&leavingDate=${searchInfo.leavingDate}&roomType=${searchInfo.roomType}&hotelName=${searchInfo.hotelName}&hotelAddress=${searchInfo.hotelAddress}&roomNumber=${searchInfo.roomNumber}&pageSize=12&pageNumber=1`,
-            config
          )
          .then(({ data }) => {
             console.log(data);

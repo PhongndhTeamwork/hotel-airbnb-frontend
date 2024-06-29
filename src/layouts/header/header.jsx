@@ -5,6 +5,7 @@ import {
    faInfoCircle,
    faTools,
    faEnvelope,
+   faCloudMeatball
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Image } from "react-bootstrap";
@@ -78,7 +79,14 @@ const Header = () => {
                            icon={faInfoCircle}
                            className="header-list__icon"
                         />
-                        <Link to="/hotelier/hotels">Hotelier</Link>
+                        <Link to="/hotelier/hotels">Home</Link>
+                     </div>
+                     <div className="header-list__item">
+                        <FontAwesomeIcon
+                           icon={faCloudMeatball}
+                           className="header-list__icon"
+                        />
+                        <Link to="/hotelier/booked">Booked</Link>
                      </div>
                   </Fragment>
                )}
