@@ -32,12 +32,19 @@ const HotelCard = ({ hotel, id }) => {
                   </Carousel.Item>
                ))}
             </Carousel> */}
-            <Image src={Image1} width="100%" />
+            <Image
+               src={
+                  hotel?.images?.length > 0
+                     ? `http://localhost:5000/${hotel?.images[0]?.image_path}`
+                     : Image1
+               }
+               width="100%"
+            />
          </div>
          <div
             className="hotel-card__body"
             onClick={() => {
-               navigate("/hotel/"+id);
+               navigate("/hotel/" + id);
             }}
          >
             <p
@@ -46,9 +53,11 @@ const HotelCard = ({ hotel, id }) => {
             >
                {hotel.name}
             </p>
-            <p className="two-line-restrict">{hotel.description}</p>
+            <p className="two-line-restrict" style={{ height: "3rem" }}>
+               {hotel.description}
+            </p>
             <div className="d-flex align-items-center justify-content-between">
-               <div className="hotel-card__price d-flex align-items-center">
+               {/* <div className="hotel-card__price d-flex align-items-center">
                   <p className="mb-0 pe-1" style={{ fontWeight: 500 }}>
                      ${hotel.minPrice}
                   </p>
@@ -57,7 +66,7 @@ const HotelCard = ({ hotel, id }) => {
                      ${hotel.maxPrice}
                   </p>
                   <p className="mb-0">/day</p>
-               </div>
+               </div> */}
                {/* <div className="hotel-card__rating d-flex align-items-center">
                   <p className="mb-0">{hotel.rating.toFixed(2)} &nbsp;</p>
                   <Image src={BlackStarIcon} width="20px" />

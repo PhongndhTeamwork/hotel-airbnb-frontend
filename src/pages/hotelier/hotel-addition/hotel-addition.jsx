@@ -1,12 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import "./hotel-addition.scss";
-import { Button, TextField } from "@mui/material/";
+import {
+   Button,
+   FormControl,
+   InputLabel,
+   MenuItem,
+   TextField,
+   Select as MuiSelect,
+} from "@mui/material/";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { PlusCircle, DashCircle } from "react-bootstrap-icons";
+import { PlusCircle, DashCircle, ArrowLeft } from "react-bootstrap-icons";
 import { Image } from "react-bootstrap";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const animatedComponents = makeAnimated();
 
@@ -196,6 +204,8 @@ const HotelAddition = () => {
    );
    // const [isHouseAdded, setIsHouseAdded] = useState(false);
 
+   const navigate = useNavigate();
+
    const config = useMemo(() => {
       return {
          headers: {
@@ -267,13 +277,9 @@ const HotelAddition = () => {
    const handleHotelAddition = (e) => {
       e.preventDefault();
       if (!userInformation) return;
-      // console.log(images, newHotel);
-      // console.log(newHotel.services);
       const serviceRequest = newHotel.services?.map((service) => service.value);
       delete newHotel.location;
       delete newHotel.services;
-
-      // console.log(serviceRequest)
 
       axios
          .post("/create-hotel", newHotel, config)
@@ -287,6 +293,8 @@ const HotelAddition = () => {
                   .post("/create-image/" + data.id, formData, configFormData)
                   .then((response) => {
                      // console.log(response);
+                     alert("Create hotel successfully");
+                     navigate("/hotelier/hotels");
                   })
                   .catch((error) => {
                      console.error(error);
@@ -320,6 +328,8 @@ const HotelAddition = () => {
             });
             setImages([]);
             alert("Hotel added successfully");
+            alert("Image created successfully");
+            window.scrollTo(0, 0);
          })
          .catch((error) => {
             console.error(error);
@@ -328,6 +338,18 @@ const HotelAddition = () => {
 
    return (
       <div className="hotel-addition">
+         <Button
+            variant="contained"
+            color="warning"
+            className="my-3"
+            style={{ width: "10rem" }}
+            onClick={() => {
+               navigate(-1);
+            }}
+         >
+            <ArrowLeft />
+            &nbsp;&nbsp;&nbsp;Go back
+         </Button>
          <form className="hotel-addition__form" onSubmit={handleHotelAddition}>
             <h3>Add New Hotel</h3>
             <div className="hotel-addition__form-row my-4 w-100">
@@ -396,7 +418,7 @@ const HotelAddition = () => {
             </div>
 
             <div className="d-flex justify-content-between">
-               <Select
+               {/* <Select
                   className="hotel-addition__selector w-50 me-3"
                   closeMenuOnSelect={false}
                   components={animatedComponents}
@@ -408,11 +430,32 @@ const HotelAddition = () => {
                      // console.log(newHotel);
                   }}
                   placeholder="Select star..."
-               />
+               /> */}
+               <FormControl fullWidth className="me-3">
+                  <InputLabel id="demo-simple-select-label">Star</InputLabel>
+                  <MuiSelect
+                     labelId="demo-simple-select-label"
+                     id="demo-simple-select"
+                     value={newHotel?.star}
+                     size="small"
+                     label="Star"
+                     onChange={(e) => {
+                        setNewHotel((prevStatus) => {
+                           return { ...prevStatus, star: e.target.value };
+                        });
+                     }}
+                  >
+                     {stars.map((star, index) => (
+                        <MenuItem key={index} value={star.value}>
+                           {star.label}
+                        </MenuItem>
+                     ))}
+                  </MuiSelect>
+               </FormControl>
                <TextField
                   label="Price"
                   variant="outlined"
-                  className="w-100"
+                  className="w-100 ms-3"
                   size="small"
                   required
                   // multiline
@@ -424,6 +467,7 @@ const HotelAddition = () => {
                   }}
                />
             </div>
+
             <div className="hotel-addition__form-row my-4 w-100">
                <Select
                   className="hotel-addition__selector"

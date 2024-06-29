@@ -1,65 +1,44 @@
+import { useEffect, useMemo, useState } from "react";
 import "./user-list.scss";
 import { MDBTable, MDBTableHead, MDBTableBody } from "mdb-react-ui-kit";
 import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const users = [
-   {
-      name: "John",
-      phoneNumber: "0987897656",
-      email: "john@example.com",
-      role: 0,
-   },
-   {
-      name: "John Lop",
-      phoneNumber: "0987897656",
-      email: "john@example.com",
-      role: 1,
-   },
-   {
-      name: "John",
-      phoneNumber: "0987897656",
-      email: "john@example.com",
-      role: 0,
-   },
-   {
-      name: "Frtyyyy",
-      phoneNumber: "0987897656",
-      email: "dwewewewew@example.com",
-      role: 1,
-   },
-   {
-      name: "John",
-      phoneNumber: "0987897656",
-      email: "john@example.com",
-      role: 1,
-   },
-   {
-      name: "John",
-      phoneNumber: "0987897656",
-      email: "john@example.com",
-      role: 0,
-   },
-   {
-      name: "John",
-      phoneNumber: "0987897656",
-      email: "john@example.com",
-      role: 0,
-   },
-];
 
 const UserList = () => {
    const navigate = useNavigate();
    const { userInformation } = useSelector((state) => state.userLogin);
 
-   const config = {
-      headers: {
-         Authorization: `Bearer ${userInformation?.token}`,
-         "Content-Type": "application/json",
-      },
-   };
+   const [allUsers, setAllUsers] = useState();
 
+   const config = useMemo(() => {
+      return {
+         headers: {
+            Authorization: `Bearer ${userInformation?.token}`,
+            "Content-Type": "application/json",
+         },
+      };
+   }, [userInformation?.token]);
+
+   useEffect(() => {
+      axios
+         .get("/get-user?pageNumber=1&pageSize=1000", config)
+         .then(({ data }) => {
+            setAllUsers(data.data);
+         })
+         .catch((err) => {
+            console.error(err);
+         });
+   }, [config]);
+
+   const formatDateToDDMMYYYY = (date) => {
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+   };
 
    return (
       <div className="user-list">
@@ -80,32 +59,39 @@ const UserList = () => {
                   <th className="text-start" scope="col">
                      Name
                   </th>
-                  <th className="text-start" scope="col">
+                  {/* <th className="text-start" scope="col">
                      Email
-                  </th>
+                  </th> */}
                   <th className="text-start" scope="col">
                      Phone Number
                   </th>
                   <th className="text-start" scope="col">
                      Role
                   </th>
+                  <th className="text-start" scope="col">
+                     Register Date
+                  </th>
                </tr>
             </MDBTableHead>
             <MDBTableBody>
-               {users.map((user, index) => (
+               {allUsers?.map((user, index) => (
                   <tr
                      className={
                         user.role === 0 ? "table-primary" : "table-success"
                      }
+                     key={index}
                   >
                      <th scope="row" className="text-start">
                         {index + 1}
                      </th>
                      <td className="text-start">{user.name}</td>
-                     <td className="text-start">{user.email}</td>
-                     <td className="text-start">{user.phoneNumber}</td>
+                     {/* <td className="text-start">{user.email}</td> */}
+                     <td className="text-start">{user.phone_number}</td>
                      <td className="text-start">
                         {user.role === 0 ? "Customer" : "Hotelier"}
+                     </td>
+                     <td className="text-start">
+                        {formatDateToDDMMYYYY(new Date(user.register_datetime))}
                      </td>
                   </tr>
                ))}

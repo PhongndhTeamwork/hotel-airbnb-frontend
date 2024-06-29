@@ -48,69 +48,6 @@ const HotelDetail = () => {
    //       },
    //    };
    // }, [userInformation]);
-   const rooms = [
-      {
-         images: [RoomImage1, RoomImage6, RoomImage8],
-         name: "Tellus id interdum velit",
-         description:
-            "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-         area: 12,
-         price: 200,
-         rating: 4.5,
-         comment: 13,
-      },
-      {
-         images: [RoomImage2, RoomImage12, RoomImage6],
-         name: "Tellus id interdum velit",
-         description:
-            "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-         area: 12,
-         price: 200,
-         rating: 4.1,
-         comment: 2,
-      },
-      {
-         images: [RoomImage3, RoomImage4, RoomImage8],
-         name: "Tellus id interdum velit",
-         description:
-            "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-         area: 12,
-         price: 200,
-         rating: 4.8,
-         comment: 19,
-      },
-      {
-         images: [RoomImage4, RoomImage6, RoomImage7],
-         name: "Tellus id interdum velit",
-         description:
-            "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-         area: 12,
-         price: 200,
-         rating: 4.9,
-         comment: 19,
-      },
-      {
-         images: [RoomImage5, RoomImage8, RoomImage11],
-         name: "Tellus id interdum velit",
-         description:
-            "Tortor at risus viverra adipiscing at in tellus integer. Diam maecenas ultricies mi eget. Massa ultricies mi quis hendrerit dolor magna. ",
-         area: 12,
-         price: 200,
-         rating: 4.1,
-         comment: 15,
-      },
-   ];
-
-   const amenities = [
-      "City skyline view",
-      "Courtyard view",
-      "Mountain view",
-      "Cleaning products",
-      "Shampoo",
-      "Washer",
-      "Bed linens",
-      "Ethernet connection",
-   ];
 
    const [page, setPage] = useState(1);
    const [hotelRooms, setHotelRooms] = useState([]);
@@ -138,16 +75,29 @@ const HotelDetail = () => {
    }, [config, id]);
 
    useEffect(() => {
+      setHotelRooms([]);
       axios
          .get(`/get-room-as-customer/${id}?pageNumber=1&pageSize=1000`, config)
          .then(({ data }) => {
             console.log(data.data);
-           setHotelRooms(data.data);
+            for (let i = 0; i < data.data.length; i++) {
+               axios
+                  .get(`/get-image/${data.data[i].id}?imageType=1`, config)
+                  .then((images) => {
+                     setHotelRooms((prevStatus) => [
+                        ...prevStatus,
+                        { ...data.data[i], images: images.data },
+                     ]);
+                  })
+                  .catch((error) => {
+                     console.error(error);
+                  });
+            }
          })
          .catch((error) => {
             console.error(error);
          });
-   },[config, id]);
+   }, [config, id]);
 
    useEffect(() => {
       getAllFeedback();
@@ -194,6 +144,17 @@ const HotelDetail = () => {
             console.error(error);
          });
    }, [id]);
+
+   useEffect(() => {
+      axios
+         .get(`/get-image/${id}?imageType=0`, config)
+         .then(({ data }) => {
+            setHotelImages(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config, id]);
 
    return (
       <div className="hotel-detail">
@@ -296,10 +257,11 @@ const HotelDetail = () => {
                                  // <Amenity key={index} name={amenity} />
                                  <div
                                     key={index}
-                                    className="d-flex align-items-center"
+                                    className="d-flex align-items-center mb-3"
                                  >
                                     <Image
                                        src={`http://localhost:5000/${amenity.image_path}`}
+                                       width="24px"
                                     />
                                     <p className="mb-0 ms-4">{amenity.name}</p>
                                  </div>
@@ -312,10 +274,11 @@ const HotelDetail = () => {
                                  // <Amenity key={index} name={amenity} />
                                  <div
                                     key={index}
-                                    className="d-flex align-items-center"
+                                    className="d-flex align-items-center mb-3"
                                  >
                                     <Image
                                        src={`http://localhost:5000/${amenity.image_path}`}
+                                       width="24px"
                                     />
                                     <p className="mb-0 ms-4">{amenity.name}</p>
                                  </div>
@@ -336,7 +299,7 @@ const HotelDetail = () => {
                   lg={6}
                   xl={6}
                   xxl={6}
-                  className="hotel-detail__room-card"
+                  className="hotel-detail__room-card pt-3"
                   style={{ maxHeight: "80vh", overflow: "auto" }}
                >
                   <Row>
@@ -350,10 +313,12 @@ const HotelDetail = () => {
                            xxl={12}
                            key={roomIndex}
                            className="hotel-detail__room-card"
+                           style={{ width: "95%" }}
                         >
-                           <RoomCard room={room} id={room.id}/>
+                           <RoomCard room={room} id={room.id} />
                         </Col>
                      ))}
+                     {/* <Button onClick={() => {console.log(hotelRooms)}}>Click</Button> */}
 
                      {/* <div className="mt-3 hotel-detail_pagination d-flex justify-content-center">
                         <PaginationControl
@@ -371,7 +336,32 @@ const HotelDetail = () => {
                </Col>
             </Row>
          </div>
-         <div className="hotel-detail__feedback">
+
+         <div className="mt-5">
+            <h2 className="text-start">Images</h2>
+            <Row className="">
+               {hotelImages?.map((image, index) => (
+                  <Col
+                     key={index}
+                     xs={12}
+                     sm={6}
+                     md={6}
+                     lg={3}
+                     xl={3}
+                     xxl={3}
+                     className=""
+                  >
+                     <Image
+                        src={`http://localhost:5000/${image.image_path}`}
+                        width="100%"
+                        style={{ aspectRatio: "1/1" }}
+                     />
+                  </Col>
+               ))}
+            </Row>
+         </div>
+
+         <div className="hotel-detail__feedback mt-5">
             <h4>Feedback</h4>
             <hr />
             {allFeedback.map((feedback) => (

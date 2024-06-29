@@ -52,12 +52,25 @@ const Hotels = () => {
    const [currentPage, setCurrentPage] = useState(1);
 
    useEffect(() => {
+      setAllHotels([]);
       axios
          .get("/get-hotel?pageNumber=1&pageSize=4", config)
          .then(({ data }) => {
-            console.log(data);
+            // console.log(data);
             setPageTotal(data.pageTotal);
-            setAllHotels(data.data);
+            for (let i = 0; i < data.data.length; i++) {
+               axios
+                  .get(`/get-image/${data.data[i].id}?imageType=0`, config)
+                  .then((images) => {
+                     setAllHotels((prevStatus) => [
+                        ...prevStatus,
+                        { ...data.data[i], images: images.data },
+                     ]);
+                  })
+                  .catch((error) => {
+                     console.error(error);
+                  });
+            }
          })
          .then((error) => {
             console.error(error);
@@ -66,11 +79,25 @@ const Hotels = () => {
 
    const handleChangePage = (page) => {
       window.scrollTo(0, 0);
+      setAllHotels([]);
       axios
          .get(`/get-hotel?pageNumber=${page}&pageSize=4`, config)
          .then(({ data }) => {
-            console.log(data);
-            setAllHotels(data.data);
+            // console.log(data);
+            // setAllHotels(data.data);
+            for (let i = 0; i < data.data.length; i++) {
+               axios
+                  .get(`/get-image/${data.data[i].id}?imageType=0`, config)
+                  .then((images) => {
+                     setAllHotels((prevStatus) => [
+                        ...prevStatus,
+                        { ...data.data[i], images: images.data },
+                     ]);
+                  })
+                  .catch((error) => {
+                     console.error(error);
+                  });
+            }
          })
          .then((error) => {
             console.error(error);
@@ -97,22 +124,24 @@ const Hotels = () => {
                   xs={12}
                   sm={12}
                   md={6}
-                  lg={4}
-                  xl={4}
-                  xxl={4}
+                  lg={3}
+                  xl={3}
+                  xxl={3}
                   key={hotelIndex}
                   className="hotelier-hotels__card mb-4"
                   onClick={() => {
-                     navigate("/hotelier/edit-hotel/"+hotel?.id);
+                     navigate("/hotelier/edit-hotel/" + hotel?.id);
                   }}
                >
                   <Image
                      src={
-                        hotel.image
-                           ? "http://localhost:5000/" + hotel.image[0]
+                        hotel.images
+                           ? "http://localhost:5000/" +
+                             hotel.images[0]?.image_path
                            : HotelImage1
                      }
                      width="100%"
+                     style={{ aspectRatio: 1 / 1 }}
                   />
                   <div className="hotelier-hotels__name">
                      <h4

@@ -1,7 +1,40 @@
 .booked {
-   background-color: bisque;
+   // background-color: bisque;
    border-radius: 0.5rem;
-   width: 80%;
-   margin : 5rem auto;
-   padding : 4rem;
+   width: 70%;
+   margin: 1rem auto;
+   padding: 1rem;
+
+   .booked__button {
+      border-top-right-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+
+      div {
+         font-size: 1.5rem;
+         font-weight: bold;
+         color: white;
+      }
+
+   }
+
+   .is-pay {
+      &:hover {
+         opacity: 0.8;
+         cursor: pointer;
+      }
+
+      &:active {
+         opacity: 0.9;
+      }
+   }
+
+   .booked__main {
+      background-color: black;
+      color: white;
+
+      p {
+         line-height: 0.5rem;
+         margin-bottom: 0;
+      }
+   }
 }

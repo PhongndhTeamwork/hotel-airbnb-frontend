@@ -1,9 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./hotel-edition.scss";
-import { Button, TextField } from "@mui/material/";
+import {
+   Button,
+   FormControl,
+   InputLabel,
+   TextField,
+   Select as MuiSelect,
+   MenuItem,
+} from "@mui/material/";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { PlusCircle, DashCircle } from "react-bootstrap-icons";
+import { PlusCircle, DashCircle, ArrowLeft } from "react-bootstrap-icons";
 import { Col, Form, Image, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import RoomImage1 from "../../../assets/images/room/room1.jpg";
@@ -23,149 +30,6 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const animatedComponents = makeAnimated();
-
-// const services = [
-//    {
-//       value: "City skyline view",
-//       label: "City skyline view",
-//    },
-//    {
-//       value: "Courtyard view",
-//       label: "Courtyard view",
-//    },
-//    {
-//       value: "Mountain view",
-//       label: "Mountain view",
-//    },
-//    {
-//       value: "Cleaning products",
-//       label: "Cleaning products",
-//    },
-//    {
-//       value: "Shampoo",
-//       label: "Shampoo",
-//    },
-//    {
-//       value: "Free dryer",
-//       label: "Free dryer",
-//    },
-//    {
-//       value: "Hangers",
-//       label: "Hangers",
-//    },
-//    {
-//       value: "Bed linens",
-//       label: "Bed linens",
-//    },
-//    {
-//       value: "Ethernet connection",
-//       label: "Ethernet connection",
-//    },
-//    {
-//       value: "Exercise equipment",
-//       label: "Exercise equipment",
-//    },
-//    {
-//       value: "Books and reading material",
-//       label: "Books and reading material",
-//    },
-//    {
-//       value: "Clothing storage",
-//       label: "Clothing storage",
-//    },
-//    {
-//       value: "Ceiling fan",
-//       label: "Ceiling fan",
-//    },
-//    {
-//       value: "Portable fans",
-//       label: "Portable fans",
-//    },
-//    {
-//       value: "Exterior security cameras",
-//       label: "Exterior security cameras",
-//    },
-//    {
-//       value: "Fire extinguisher",
-//       label: "Fire extinguisher",
-//    },
-//    {
-//       value: "First aid kit",
-//       label: "First aid kit",
-//    },
-//    {
-//       value: "Wifi",
-//       label: "Wifi",
-//    },
-//    {
-//       value: "Dedicated workspace",
-//       label: "Dedicated workspace",
-//    },
-//    {
-//       value: "Kitchen",
-//       label: "Kitchen",
-//    },
-//    {
-//       value: "Refrigerator",
-//       label: "Refrigerator",
-//    },
-//    {
-//       value: "Microwave",
-//       label: "Microwave",
-//    },
-//    {
-//       value: "Stove",
-//       label: "Stove",
-//    },
-//    {
-//       value: "Dedicated workspace",
-//       label: "Dedicated workspace",
-//    },
-//    {
-//       value: "Toaster",
-//       label: "Toaster",
-//    },
-//    {
-//       value: "Free parking on premises",
-//       label: "Free parking on premises",
-//    },
-//    {
-//       value: "Barbecue utensils",
-//       label: "Barbecue utensils",
-//    },
-//    {
-//       value: "Shared pool",
-//       label: "Shared pool",
-//    },
-//    {
-//       value: "EV charger",
-//       label: "EV charger",
-//    },
-//    {
-//       value: "Pets allowed",
-//       label: "Pets allowed",
-//    },
-//    {
-//       value: "Breakfast Buffet",
-//       label: "Breakfast Buffet",
-//    },
-//    {
-//       value: "Smoking allowed",
-//       label: "Smoking allowed",
-//    },
-//    {
-//       value: "Cleaning available during stay",
-//       label: "Cleaning available during stay",
-//    },
-//    {
-//       value: "Iron",
-//       label: "Iron",
-//    },
-//    {
-//       value: "Hot water kettle",
-//       label: "Hot water kettle",
-//    },
-// ];
 
 const rooms = [
    {
@@ -279,9 +143,7 @@ const HotelEdition = () => {
    const navigate = useNavigate();
    const formRef = useRef();
 
-   const { error, loading, userInformation } = useSelector(
-      (state) => state.userLogin
-   );
+   const { userInformation } = useSelector((state) => state.userLogin);
 
    const [services, setServices] = useState([]);
 
@@ -303,29 +165,12 @@ const HotelEdition = () => {
       };
    }, [userInformation]);
 
-   const [numberOfImage, setNumberOfImage] = useState(3);
-   const [images, setImages] = useState([]);
-
    const [hotel, setHotel] = useState({});
    const [hotelServices, setHotelServices] = useState([]);
-   const [remainServices, setRemainServices] = useState([]);
    const [hotelImages, setHotelImages] = useState([]);
    const [newImage, setNewImage] = useState([]);
 
    const [hotelRooms, setHotelRooms] = useState([]);
-
-   useEffect(() => {
-      axios
-         .get(`/get-room/${id}?pageNumber=1&pageSize=1000`, config)
-         .then(({ data }) => {
-            console.log(data.data);
-           setHotelRooms(data.data);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-   },[config, id]);
-
 
    useEffect(() => {
       axios
@@ -346,11 +191,11 @@ const HotelEdition = () => {
          });
    }, [config]);
 
-   const getHotelInfo = useCallback(() => {
+   const getHotelService = useCallback(() => {
       axios
          .get(`/get-service-by-hotelier/${id}`, config)
          .then(({ data }) => {
-            console.log(data);
+            // console.log(data);
             setHotelServices(data);
          })
          .catch((error) => {
@@ -358,32 +203,47 @@ const HotelEdition = () => {
          });
    }, [config, id]);
 
-   useState(() => {
+   const getHotelImages = useCallback(() => {
       axios
          .get(`/get-image/${id}?imageType=0`, config)
          .then(({ data }) => {
-            console.log(data);
+            // console.log(data);
             setHotelImages(data);
-            setImages(data);
-            setNumberOfImage(data.length);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-   }, []);
-
-   useEffect(() => {
-      axios
-         .get(`/get-image/${id}?imageType=0`, config)
-         .then(({ data }) => {
-            console.log(data);
          })
          .catch((error) => {
             console.error(error);
          });
    }, [config, id]);
 
-   useEffect(() => {
+   const getRooms = useCallback(() => {
+      setHotelRooms([]);
+      axios
+         .get(`/get-room/${id}?pageNumber=1&pageSize=1000`, config)
+         .then(({ data }) => {
+            // setHotelRooms(data.data);
+            for (let i = 0; i < data.data.length; i++) {
+               axios
+                  .get(`/get-image/${data.data[i].id}?imageType=1`, config)
+                  .then((images) => {
+                     setHotelRooms((prevStatus) => [
+                        ...prevStatus,
+                        { ...data.data[i], images: images.data },
+                     ]);
+                  })
+                  .catch((error) => {
+                     console.error(error);
+                  });
+            }
+         })
+         .then(() => {
+            // console.log(hotelRooms);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config, id]);
+
+   const getHotelInfo = useCallback(() => {
       axios
          .get(`/get-hotel-detail/${id}`, config)
          .then(({ data }) => {
@@ -393,11 +253,23 @@ const HotelEdition = () => {
          .catch((error) => {
             console.error(error);
          });
-   }, [config, hotel?.star, id]);
+   }, [config, id]);
+
+   useEffect(() => {
+      getHotelImages();
+   }, [getHotelImages]);
+
+   useEffect(() => {
+      getRooms();
+   }, [getRooms]);
 
    useEffect(() => {
       getHotelInfo();
    }, [getHotelInfo]);
+
+   useEffect(() => {
+      getHotelService();
+   }, [getHotelService]);
 
    // useEffect(() => {
    //    axios
@@ -408,7 +280,7 @@ const HotelEdition = () => {
    //       });
    // }, []);
 
-   const handleChangeImage = (e, index) => {
+   const handleChangeImage = (e) => {
       const file = e.target.files[0];
       if (file) {
          const imageURL = URL.createObjectURL(file);
@@ -421,10 +293,6 @@ const HotelEdition = () => {
       // setImages(imagesTemp);
    };
 
-   const handleUpdateHotel = () => {
-      console.log(images);
-      console.log(hotel);
-   };
 
    const handleUpdateBasicInformation = () => {
       let hotelInfoRequest = { ...hotel };
@@ -441,36 +309,29 @@ const HotelEdition = () => {
    };
 
    const handleUpdateService = () => {
-      for (var i = 0; i < hotelServices.length; i++) {
-         axios
-            .post(
-               "/delete-service-by-hotelier/" + id,
-               { serviceId: hotelServices[i].id },
-               config
-            )
-            .then((response) => {
-               console.log(response);
-            })
-            .catch((error) => {
-               console.error(error);
-            });
-      }
-
-      // const serviceRequest = hotel.services?.map((service) => service.value);
-      // for (var j = 0; j < serviceRequest.length; j++) {
-      //    axios
-      //       .post(
-      //          "/add-service/" + id,
-      //          { serviceId: serviceRequest[j] },
-      //          config
-      //       )
-      //       .then((response) => {
-      //          console.log(response);
-      //       })
-      //       .catch((error) => {
-      //          console.error(error);
-      //       });
-      // }
+      // console.log(hotel.services);
+      axios
+         .delete("/delete-all-services/" + id, config)
+         .then((response) => {
+            console.log(response);
+            for (var j = 0; j < hotel?.services?.length; j++) {
+               axios
+                  .post(
+                     "/add-service/" + id,
+                     { serviceId: hotel?.services[j]?.value },
+                     configFormData
+                  )
+                  .then((response) => {
+                     // console.log(response);
+                  })
+                  .catch((error) => {
+                     console.error(error);
+                  });
+            }
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    };
 
    const handleRemoveImage = (imageId) => {
@@ -479,10 +340,10 @@ const HotelEdition = () => {
       );
       if (!isConfirm) return;
       axios
-         .delete(`/delete-image/${id}?imageType=0`, config)
+         .delete(`/delete-each-image/${id}/${imageId}?imageType=0`, config)
          .then((response) => {
             console.log(response);
-            getHotelInfo();
+            getHotelImages();
             alert("Delete image successfully");
          })
          .catch((error) => {
@@ -492,20 +353,40 @@ const HotelEdition = () => {
 
    const handleAddImage = () => {
       const formData = new FormData();
-               formData.append("image", newImage?.file);
-               formData.append("imageType", 0);
-               axios
-               .post("/create-image/" + id, formData, configFormData)
-               .then((response) => {
-                  // console.log(response);
-               })
-               .catch((error) => {
-                  console.error(error);
-               });
+      formData.append("image", newImage?.file);
+      formData.append("imageType", 0);
+      axios
+         .post("/create-image/" + id, formData, configFormData)
+         .then(() => {
+            setNewImage({
+               path: "",
+               file: "",
+            });
+            getHotelImages();
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    };
+
+   useEffect(() => {
+      console.log(hotelRooms);
+   }, [hotelRooms]);
 
    return (
       <div className="hotel-edition">
+         <Button
+            variant="contained"
+            color="warning"
+            className="my-3"
+            style={{ width: "10rem" }}
+            onClick={() => {
+               navigate(-1);
+            }}
+         >
+            <ArrowLeft />
+            &nbsp;&nbsp;&nbsp;Go back
+         </Button>
          <Row>
             <Col xs={12} sm={12} md={12} lg={6} xl={7} xxl={7}>
                <div className="hotel-edition__form" ref={formRef}>
@@ -529,6 +410,7 @@ const HotelEdition = () => {
                      <Form.Group className="mb-3">
                         <Form.Label>Description</Form.Label>
                         <Form.Control
+                           as="textarea"
                            type="text"
                            multiple
                            className="w-100"
@@ -577,7 +459,7 @@ const HotelEdition = () => {
                      )}
                   </div>
                   <div className="d-flex justify-content-between text-start w-100">
-                     <Form.Group className="mb-3">
+                     <Form.Group className="me-3 w-100">
                         <Form.Label>Price</Form.Label>
                         <Form.Control
                            type="number"
@@ -588,40 +470,42 @@ const HotelEdition = () => {
                            }}
                         />
                      </Form.Group>
+                     <Form.Group className="ms-3 w-100">
+                        <Form.Label>Star</Form.Label>
+                        <Form.Select
+                           value={hotel?.star}
+                           onChange={(e) => {
+                              setHotel((prevStatus) => {
+                                 return { ...prevStatus, star: e.target.value };
+                              });
+                           }}
+                        >
+                           {stars.map((star, index) => (
+                              <option key={index} value={star.value}>
+                                 {star.label}
+                              </option>
+                           ))}
+                        </Form.Select>
+                     </Form.Group>
                   </div>
-                  <div className="d-flex justify-content-between mt-4">
-                     <Select
-                        className="hotel-addition__selector w-50 me-3"
-                        closeMenuOnSelect={true}
-                        components={animatedComponents}
-                        required
-                        defaultValue={stars.find(
-                           (star) => star.value === hotel?.star
-                        )}
-                        options={stars}
-                        onChange={(e) => {
-                           setHotel({ ...hotel, star: e.value });
-                           // console.log(newHotel);
-                        }}
-                        placeholder="Select star..."
-                     />
-                  </div>
-                  <div>
+                  <div className="d-flex justify-content-start">
                      <Button
                         variant="contained"
                         color="secondary"
-                        className="mt-3"
+                        className="mt-4"
                         onClick={handleUpdateBasicInformation}
                      >
                         Update basic information
                      </Button>
                   </div>
+                  <hr className="my-5" />
                   <div className="hotel-edition__form-row my-4 w-100">
                      <Select
                         className="hotel-edition__selector"
                         closeMenuOnSelect={false}
                         components={animatedComponents}
                         isMulti
+                        defaultValue={services}
                         options={services}
                         onChange={(e) => {
                            setHotel({ ...hotel, services: e });
@@ -629,14 +513,16 @@ const HotelEdition = () => {
                         placeholder="Select services..."
                      />
                   </div>
-                  <Button
-                     variant="contained"
-                     color="secondary"
-                     className="mt-2 mb-4"
-                     onClick={handleUpdateService}
-                  >
-                     Update service
-                  </Button>
+                  <div className="d-flex justify-content-start">
+                     <Button
+                        variant="contained"
+                        color="secondary"
+                        className="mt-2 mb-4"
+                        onClick={handleUpdateService}
+                     >
+                        Update service
+                     </Button>
+                  </div>
                   <hr />
                   <div className="hotel-edition__form-row my-4 w-100">
                      {hotelImages?.map((image, index) => (
@@ -673,14 +559,19 @@ const HotelEdition = () => {
                            accept="image/png, image/gif, image/jpeg"
                         />
                      </Form.Group>
-                     <Button
-                        variant="contained"
-                        color="secondary"
-                        className="mt-2 mb-4"
-                        onClick={handleAddImage}
-                     >
-                        Add image
-                     </Button>
+                     <div className="d-flex justify-content-start">
+                        <Image src={newImage?.path} className="w-50" />
+                     </div>
+                     <div className="d-flex justify-content-start">
+                        <Button
+                           variant="contained"
+                           color="secondary"
+                           className="mt-2 mb-4"
+                           onClick={handleAddImage}
+                        >
+                           Add image
+                        </Button>
+                     </div>
                   </div>
 
                   {/* <Button
@@ -708,12 +599,18 @@ const HotelEdition = () => {
                   {hotelRooms?.map((room, index) => (
                      <div key={index} className="hotel-edition__room my-3">
                         <div className="hotel-edition__room-image">
-                           <Image src={room?.images?.slice(0,1)} width="100%" />
+                           <Image
+                              src={
+                                 "http://localhost:5000/" +
+                                 room?.images[0]?.image_path
+                              }
+                              width="100%"
+                           />
                         </div>
                         <div
                            className="hotel-edition__room-info text-start"
                            onClick={() => {
-                              navigate("/hotelier/edit-room/1");
+                              navigate(`/hotelier/edit-room/${room.id}?hotelId=${id}`);
                            }}
                         >
                            <h4 className="one-line-restrict">{room?.name}</h4>

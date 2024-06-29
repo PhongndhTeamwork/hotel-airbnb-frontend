@@ -27,7 +27,7 @@ const RoomCard = ({ room, id }) => {
                }}
             >
                <Image
-                  src={room?.images?.slice(0, 1)}
+                  src={"http://localhost:5000/"+ room?.images[0].image_path}
                   width="100%"
                   style={{ border: isFullImage ? "1px solid black" : "none" }}
                />
@@ -44,7 +44,7 @@ const RoomCard = ({ room, id }) => {
                      className="room-card__full-image"
                   >
                      <Image
-                        src={room?.images?.slice(1, 2)}
+                        src={"http://localhost:5000/"+ room?.images[1].image_path}
                         width="100%"
                         style={{ border: "1px solid black" }}
                      />
@@ -59,7 +59,7 @@ const RoomCard = ({ room, id }) => {
                      className="room-card__full-image"
                   >
                      <Image
-                        src={room?.images?.slice(2, 3)}
+                        src={"http://localhost:5000/"+ room?.images[2].image_path}
                         width="100%"
                         style={{
                            borderTopRightRadius: "0.5rem",

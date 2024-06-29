@@ -1,12 +1,13 @@
 .room-detail {
-   padding: var(--suitable-padding);
+   padding: 0 var(--suitable-padding);
 
-   .room-details__main-image{
-      img{
-         margin : 0.25rem;
+   .room-details__main-image {
+      img {
+         margin: 0.25rem;
          border-radius: 0.25rem;
       }
    }
+
    .room-detail__images {
       // background-color: rgba(0, 0, 0,0.5);
       border-radius: 0.25rem;
@@ -35,13 +36,27 @@
 
       }
 
-      img{
+      img {
          border: 1px solid white;
-         &:hover{
+
+         &:hover {
             cursor: pointer;
             opacity: 0.95;
          }
       }
 
+   }
+
+   .room-detail__infos {
+      border-radius: 2rem;
+      background-color: black;
+      color: white;
+      width: fit-content;
+      margin: 0 auto;
+
+      div {
+         width: 200px;
+         padding: 0.5rem
+      }
    }
 }

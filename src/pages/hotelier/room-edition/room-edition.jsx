@@ -1,158 +1,15 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "./room-edition.scss";
-import { useEffect, useMemo, useState } from "react";
-import { Button, TextField } from "@mui/material/";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
-import { PlusCircle, DashCircle } from "react-bootstrap-icons";
-import { Image } from "react-bootstrap";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button } from "@mui/material/";
+// import Select from "react-select";
+// import makeAnimated from "react-select/animated";
+import { PlusCircle, DashCircle, ArrowLeft } from "react-bootstrap-icons";
+import { Form, Image } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-const animatedComponents = makeAnimated();
-
-const services = [
-   {
-      value: "City skyline view",
-      label: "City skyline view",
-   },
-   {
-      value: "Courtyard view",
-      label: "Courtyard view",
-   },
-   {
-      value: "Mountain view",
-      label: "Mountain view",
-   },
-   {
-      value: "Cleaning products",
-      label: "Cleaning products",
-   },
-   {
-      value: "Shampoo",
-      label: "Shampoo",
-   },
-   {
-      value: "Free dryer",
-      label: "Free dryer",
-   },
-   {
-      value: "Hangers",
-      label: "Hangers",
-   },
-   {
-      value: "Bed linens",
-      label: "Bed linens",
-   },
-   {
-      value: "Ethernet connection",
-      label: "Ethernet connection",
-   },
-   {
-      value: "Exercise equipment",
-      label: "Exercise equipment",
-   },
-   {
-      value: "Books and reading material",
-      label: "Books and reading material",
-   },
-   {
-      value: "Clothing storage",
-      label: "Clothing storage",
-   },
-   {
-      value: "Ceiling fan",
-      label: "Ceiling fan",
-   },
-   {
-      value: "Portable fans",
-      label: "Portable fans",
-   },
-   {
-      value: "Exterior security cameras",
-      label: "Exterior security cameras",
-   },
-   {
-      value: "Fire extinguisher",
-      label: "Fire extinguisher",
-   },
-   {
-      value: "First aid kit",
-      label: "First aid kit",
-   },
-   {
-      value: "Wifi",
-      label: "Wifi",
-   },
-   {
-      value: "Dedicated workspace",
-      label: "Dedicated workspace",
-   },
-   {
-      value: "Kitchen",
-      label: "Kitchen",
-   },
-   {
-      value: "Refrigerator",
-      label: "Refrigerator",
-   },
-   {
-      value: "Microwave",
-      label: "Microwave",
-   },
-   {
-      value: "Stove",
-      label: "Stove",
-   },
-   {
-      value: "Dedicated workspace",
-      label: "Dedicated workspace",
-   },
-   {
-      value: "Toaster",
-      label: "Toaster",
-   },
-   {
-      value: "Free parking on premises",
-      label: "Free parking on premises",
-   },
-   {
-      value: "Barbecue utensils",
-      label: "Barbecue utensils",
-   },
-   {
-      value: "Shared pool",
-      label: "Shared pool",
-   },
-   {
-      value: "EV charger",
-      label: "EV charger",
-   },
-   {
-      value: "Pets allowed",
-      label: "Pets allowed",
-   },
-   {
-      value: "Breakfast Buffet",
-      label: "Breakfast Buffet",
-   },
-   {
-      value: "Smoking allowed",
-      label: "Smoking allowed",
-   },
-   {
-      value: "Cleaning available during stay",
-      label: "Cleaning available during stay",
-   },
-   {
-      value: "Iron",
-      label: "Iron",
-   },
-   {
-      value: "Hot water kettle",
-      label: "Hot water kettle",
-   },
-];
+// const animatedComponents = makeAnimated();
 
 const types = [
    {
@@ -177,7 +34,11 @@ const RoomEdition = () => {
    const { id } = useParams();
    const { userInformation } = useSelector((state) => state.userLogin);
    const [searchParams] = useSearchParams();
-  const hotelId = searchParams.get('hotelId');
+   const hotelId = searchParams.get("hotelId");
+   const navigate = useNavigate();
+   const [images, setImages] = useState([]);
+   const [newImage, setNewImage] = useState();
+   const [room, setRoom] = useState();
 
    const config = useMemo(() => {
       return {
@@ -197,228 +58,244 @@ const RoomEdition = () => {
       };
    }, [userInformation]);
 
-   useEffect(() => {
+   const getRoom = useCallback(() => {
       if (!id) return;
       axios
          .get(`/get-room-detail/${id}`)
          .then(({ data }) => {
             console.log(data);
+            setRoom(data[0]);
          })
          .catch((error) => {
             console.error(error);
          });
-   });
+   }, [id]);
 
-   const [numberOfImage, setNumberOfImage] = useState(3);
-   const [images, setImages] = useState([]);
-   const [room, setRoom] = useState({});
+   const getImages = useCallback(() => {
+      axios
+         .get(`/get-image/${id}?imageType=1`, config)
+         .then(({ data }) => {
+            // console.log(data);
+            setImages(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }, [config, id]);
 
-   const handleChangeImage = (e, index) => {
-      const file = e.target.files[0];
-      let imagesTemp = [...images];
-      if (!imagesTemp[index]) {
-         imagesTemp[index] = {};
-      }
-      if (file) {
-         const imageURL = URL.createObjectURL(file);
-         if (!imagesTemp[index].image) {
-            imagesTemp[index].image = "";
-         }
-         imagesTemp[index].image = imageURL;
-      }
-      imagesTemp[index].file = file;
-      setImages(imagesTemp);
+   useEffect(() => {
+      getRoom();
+   }, [getRoom]);
+
+   useEffect(() => {
+      getImages();
+   }, [getImages]);
+
+   const handleRemoveImage = (imageId) => {
+      let isConfirm = window.confirm(
+         "Are you sure you want to delete this image?"
+      );
+      if (!isConfirm) return;
+      axios
+         .delete(`/delete-each-image/${id}/${imageId}?imageType=1`, config)
+         .then(() => {
+            getImages();
+            alert("Delete image successfully");
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    };
 
-   const handleSubmit = (e) => {
-      e.preventDefault();
-      axios
-      .post("/create-room/"+hotelId, room, config)
-      .then(({ data }) => {
-         for (var i = 0; i < images.length; i++) {
-            const formData = new FormData();
-            formData.append("image", images[i].file);
-            formData.append("imageType", 1);
-
-            // console.log(images[i].file);
-            console.log(data);
-            axios
-               .post("/create-image/" + data[0].id, formData, configFormData)
-               .then((response) => {
-                  // console.log(response);
-               })
-               .catch((error) => {
-                  console.error(error);
-               });
-         }
-      })
-      .then(() => {
-         console.log("Room added successfully");
-         setRoom({
-            name: "",
-            address: "",
-            star: 1,
-            description: "",
-            price: 0,
+   const handleChangeImage = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+         const imageURL = URL.createObjectURL(file);
+         setNewImage({
+            path: imageURL,
+            file: file,
          });
-         setImages([]);
-         alert("Room added successfully");
-      })
-      .catch((error) => {
-         console.error(error);
-      });
+      }
+   };
+
+   const handleUpdateBasicInformation = (e) => {
+      e.preventDefault();
+      console.log(room);
+      const roomRequest = {
+         type: room.type,
+         price: room.price,
+         area: room.area,
+      };
+      axios
+         .put(`/update-room/${hotelId}/${id}`, roomRequest, config)
+         .then(() => {
+            alert("Room updated successfully!");
+            getRoom();
+         })
+         .catch((err) => {
+            console.error(err);
+         });
+   };
+
+   const handleAddImage = () => {
+      const formData = new FormData();
+      formData.append("image", newImage?.file);
+      formData.append("imageType", 1);
+      axios
+         .post("/create-image/" + id, formData, configFormData)
+         .then(() => {
+            setNewImage({
+               path: "",
+               file: "",
+            });
+            getImages();
+            alert("Image created successfully");
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    };
 
    return (
-      <form className="room-edition" onSubmit={handleSubmit}>
+      <Form className="room-edition" onSubmit={handleUpdateBasicInformation}>
+         <Button
+            variant="contained"
+            color="warning"
+            className="my-3"
+            style={{ width: "10rem" }}
+            onClick={() => {
+               navigate(-1);
+            }}
+         >
+            <ArrowLeft />
+            &nbsp;&nbsp;&nbsp;Go back
+         </Button>
          <div className="room-edition__form">
-            <h3>{id ? "Edit room" : "Add New Room"}</h3>
+            <h3>Update room</h3>
             <div className="room-edition__form-row my-4 w-100">
-               <TextField
-                  // id="outlined-basic"
-                  label="Name"
-                  variant="outlined"
-                  required
-                  className="w-100"
-                  size="small"
-                  value={room?.name}
-                  onChange={(e) => {
-                     setRoom({ ...room, name: e.target.value });
-                  }}
-               />
+               <Form.Group
+                  className="mb-3 text-start"
+                  controlId="exampleForm.ControlInput1"
+               >
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                     type="text"
+                     required
+                     value={room?.name}
+                     onChange={(e) => {
+                        setRoom({ ...room, name: e.target.value });
+                     }}
+                  />
+               </Form.Group>
             </div>
             <div className="room-edition__form-row my-4 w-100 d-flex flex-row">
-               <TextField
-                  label="Price"
-                  variant="outlined"
-                  className="w-100 me-2"
-                  type="number"
-                  size="small"
-                  InputProps={{
-                     inputProps: {
-                        step: 0.05,
-                     },
-                  }}
-                  value={room?.price}
-                  onChange={(e) => {
-                     setRoom({ ...room, price: e.target.value });
-                  }}
-               />
-               <TextField
-                  label="Area"
-                  variant="outlined"
-                  className="w-100 ms-2"
-                  type="number"
-                  size="small"
-                  value={room?.area}
-                  onChange={(e) => {
-                     setRoom({ ...room, area: e.target.value });
-                  }}
-               />
-            </div>
-            {/* <div className="room-edition__form-row my-4 w-100">
-               <TextField
-                  label="Description"
-                  variant="outlined"
-                  multiline
-                  className="w-100"
-                  rows={4}
-                  size="small"
-               />
-            </div> */}
-            <div className="room-edition__form-row my-4 w-100">
-               <Select
-                  className="room-edition__selector"
-                  classNamePrefix="select"
-                  name="type"
-                  options={types}
-                  placeholder="Select type..."
-                  onChange={(e) => {
-                     setRoom({ ...room, star: e.value });
-                     // console.log(newHotel);
-                  }}
-               />
-            </div>
-            <div className="room-edition__form-row my-4 w-100">
-               <div className="d-flex room-edition__image-button">
-                  <Button
-                     variant="outlined"
-                     color="success"
-                     className="d-flex align-items-center justify-content-start"
-                     onClick={() => {
-                        setNumberOfImage((prev) => prev + 1);
+               <Form.Group className="mb-3 w-100 text-start me-3">
+                  <Form.Label>Price</Form.Label>
+                  <Form.Control
+                     type="text"
+                     required
+                     value={room?.price}
+                     onChange={(e) => {
+                        setRoom({ ...room, price: e.target.value });
+                     }}
+                     step={0.01}
+                  />
+               </Form.Group>
+               <Form.Group className="mb-3 w-100 text-start mx-3">
+                  <Form.Label>Area</Form.Label>
+                  <Form.Control
+                     type="text"
+                     required
+                     value={room?.area}
+                     onChange={(e) => {
+                        setRoom({ ...room, area: e.target.value });
+                     }}
+                     step={0.01}
+                  />
+               </Form.Group>
+
+               <Form.Group className="mb-3 w-100 text-start ms-3">
+                  <Form.Label>Type</Form.Label>
+                  <Form.Select
+                     required
+                     value={room?.type}
+                     onChange={(e) => {
+                        setRoom((prevStatus) => {
+                           return { ...prevStatus, type: e.target.value };
+                        });
                      }}
                   >
-                     <div className="d-flex align-items-center justify-content-start">
-                        <PlusCircle></PlusCircle> &nbsp;
-                        <p className="mb-0 ms-2">Add Image</p>
-                     </div>
-                  </Button>
-                  <Button
-                     variant="outlined"
-                     color="warning"
-                     className="ms-3 d-flex align-items-center justify-content-start"
-                     onClick={() => {
-                        if (images[numberOfImage - 1]) {
-                           images.splice(numberOfImage - 1, 1);
-                        }
-                        setNumberOfImage((prev) =>
-                           prev > 3 ? prev - 1 : prev
-                        );
+                     {types.map((type, index) => (
+                        <option key={index} value={type.value}>
+                           {type.label}
+                        </option>
+                     ))}
+                  </Form.Select>
+               </Form.Group>
+            </div>
+            <div className="d-flex justify-content-start">
+               <Button
+                  variant="contained"
+                  color="secondary"
+                  className="mt-1"
+                  type="submit"
+               >
+                  Update basic information
+               </Button>
+            </div>
+            <hr className="my-5" />
+
+            <div className="room-edition__form-row my-4 w-100">
+               {images?.map((image, index) => (
+                  <div className="w-100" key={index}>
+                     <Button
+                        color="warning"
+                        variant="contained"
+                        className="me-4"
+                        onClick={() => {
+                           handleRemoveImage(image.id);
+                        }}
+                     >
+                        Remove
+                     </Button>
+                     <Image
+                        src={`http://localhost:5000/` + image.image_path}
+                        className="w-50"
+                     />
+                     <hr />
+                  </div>
+               ))}
+            </div>
+            <div>
+               <Form.Group
+                  className="mb-3 text-start"
+                  controlId="exampleForm.ControlInput1"
+               >
+                  <Form.Label>Add Image</Form.Label>
+                  <Form.Control
+                     type="file"
+                     onChange={(e) => {
+                        handleChangeImage(e);
                      }}
+                     accept="image/png, image/gif, image/jpeg"
+                  />
+               </Form.Group>
+               <div className="d-flex justify-content-start">
+                  <Image src={newImage?.path} className="w-50" />
+               </div>
+               <div className="d-flex justify-content-start">
+                  <Button
+                     variant="contained"
+                     color="secondary"
+                     className="mt-2 mb-4"
+                     onClick={handleAddImage}
                   >
-                     <DashCircle></DashCircle>
-                     <p className="mb-0 ms-2">Remove Last Image</p>
+                     Add image
                   </Button>
                </div>
-               {Array(numberOfImage)
-                  .fill(0)
-                  .map((_, index) => (
-                     <div className="mt-4" key={index}>
-                        <div
-                           className="room-edition__image-input d-flex justify-content-start"
-                           key={index}
-                        >
-                           <Button variant="contained" component="label">
-                              Upload Image
-                              <input
-                                 type="file"
-                                 hidden
-                                 onChange={(e) => {
-                                    handleChangeImage(e, index);
-                                 }}
-                                 accept="image/png, image/gif, image/jpeg"
-                              />
-                           </Button>
-                           <TextField
-                              variant="outlined"
-                              value={images[index]?.image}
-                              // label="Selected File"
-                              size="small"
-                              InputProps={{
-                                 readOnly: true,
-                              }}
-                              className="ms-3 w-75"
-                           />
-                        </div>
-                        {images[index]?.image && (
-                           <div className="room-edition__image w-50 mt-3">
-                              <Image src={images[index]?.image} width="100%" />
-                           </div>
-                        )}
-                     </div>
-                  ))}
             </div>
-            <Button
-               variant="contained"
-               color="secondary"
-               className="mt-4"
-               type="submit"
-            >
-               Submit
-            </Button>
          </div>
-      </form>
+      </Form>
    );
 };
 

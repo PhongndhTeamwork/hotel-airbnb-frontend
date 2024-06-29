@@ -1,6 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./room-detail.scss";
 import { Button, Col, Form, Image, Row } from "react-bootstrap";
+import { Button as MuiButton } from "@mui/material";
 
 import RoomImage1 from "../../../assets/images/room/room1.jpg";
 import RoomImage2 from "../../../assets/images/room/room2.jpg";
@@ -15,7 +16,7 @@ import RoomImage10 from "../../../assets/images/room/room10.jpg";
 import RoomImage11 from "../../../assets/images/room/room11.jpg";
 import RoomImage12 from "../../../assets/images/room/room12.jpg";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronRight, ChevronLeft } from "react-bootstrap-icons";
+import { ChevronRight, ChevronLeft, ArrowLeft } from "react-bootstrap-icons";
 import axios from "axios";
 
 import OrderCard from "../../../components/order-card/order-card";
@@ -50,6 +51,7 @@ const RoomDetail = () => {
    const [room, setRoom] = useState({});
    const [fromDate, setFromDate] = useState();
    const [toDate, setToDate] = useState();
+   const navigate = useNavigate();
 
    const { userInformation } = useSelector((state) => state.userLogin);
 
@@ -77,9 +79,11 @@ const RoomDetail = () => {
    useEffect(() => {
       setServiceBodyWidth(imagesListWrapRef.current.offsetWidth);
       setServiceItemsWidth(imagesListRef.current.offsetWidth);
-   }, [imagesListWrapRef, imagesListRef]);
+   }, []);
 
-   useEffect(() => {});
+   useEffect(() => {
+      window.scrollTo(0, 0);
+   }, []);
 
    const handleClickLeftChevron = () => {
       const currentTranslateX = getTranslateX(imagesListRef.current);
@@ -94,6 +98,7 @@ const RoomDetail = () => {
 
    const handleClickRightChevron = () => {
       const currentTranslateX = getTranslateX(imagesListRef.current);
+      console.log(currentTranslateX, serviceBodyWidth, serviceItemsWidth);
       if (
          -movePixelSize + currentTranslateX >
          serviceBodyWidth - serviceItemsWidth
@@ -131,7 +136,29 @@ const RoomDetail = () => {
          });
    }, [id]);
 
+   useEffect(() => {
+      axios
+         .get(`/get-image/${id}?imageType=1`, config)
+         .then(({ data }) => {
+            // console.log(data);
+            setRoomImages(data);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   });
+
    const handleBooking = () => {
+      if (!fromDate || !toDate) {
+         alert("Please select a staying date and leaving date");
+         return;
+      } else if (fromDate > toDate) {
+         alert("Leaving date must be after staying date");
+         return;
+      } else if (fromDate < new Date()) {
+         alert("Staying date must be before current date");
+         return;
+      }
       axios
          .post(
             "/create-booking/" + id,
@@ -152,12 +179,19 @@ const RoomDetail = () => {
 
    return (
       <div className="room-detail">
-         <div className="room-details__main-image">
-            <Image src={mainImage1} width="30%" />
-            <Image src={mainImage2} width="30%" />
-         </div>
+         <MuiButton
+            variant="contained"
+            color="warning"
+            className="my-3"
+            style={{ width: "10rem" }}
+            onClick={() => {
+               navigate(-1);
+            }}
+         >
+            <ArrowLeft />
+            &nbsp;&nbsp;&nbsp;Go back
+         </MuiButton>
          <div className="room-detail__images">
-            <div></div>
             <div className="d-flex align-items-center">
                <ChevronLeft
                   size="32px"
@@ -174,11 +208,11 @@ const RoomDetail = () => {
                      className="d-flex room-detail__images-list"
                      ref={imagesListRef}
                   >
-                     {roomInfo.images.map((image, index) => (
+                     {roomImages?.map((image, index) => (
                         <div key={index}>
                            <Image
-                              src={image}
-                              width="128px"
+                              src={"http://localhost:5000/" + image.image_path}
+                              width="200px"
                               onClick={() => {
                                  setMainImage1(mainImage2);
                                  setMainImage2(image);
@@ -204,17 +238,18 @@ const RoomDetail = () => {
                   <OrderCard />
                </Col>
             </Row> */}
-            <div className="d-flex justify-content-center">
-               <p className="mx-5">Price : {room?.price}</p>
-               <p className="mx-5">Area : {room?.area}</p>
+            <div className="d-flex justify-content-center room-detail__infos">
+               <div className="mb-0">Price : ${room?.price}</div>
+               <div className="mb-0">Area : {room?.area}</div>
+               <div className="mb-0">Type : {room?.type}</div>
             </div>
-            <div className="d-flex justify-content-center">
+            <div
+               className="d-flex align-items-center d-flex justify-content-evenly mt-5 py-2"
+               style={{ border: "1.5px solid black", borderRadius: "1rem" }}
+            >
                <div>
-                  <Form.Group
-                     className="mb-3 mx-4"
-                     controlId="exampleForm.ControlInput1"
-                  >
-                     <Form.Label>From</Form.Label>
+                  <Form.Group className="mb-0 mx-4 d-flex align-items-center">
+                     <Form.Label className="me-4 mb-0">From</Form.Label>
                      <Form.Control
                         type="date"
                         placeholder="name@example.com"
@@ -225,11 +260,8 @@ const RoomDetail = () => {
                   </Form.Group>
                </div>
                <div>
-                  <Form.Group
-                     className="mb-3 mx-4"
-                     controlId="exampleForm.ControlInput1"
-                  >
-                     <Form.Label>To</Form.Label>
+                  <Form.Group className="mb-0 mx-4 d-flex align-items-center">
+                     <Form.Label className="me-4 mb-0">To</Form.Label>
                      <Form.Control
                         type="date"
                         placeholder="name@example.com"
@@ -239,15 +271,15 @@ const RoomDetail = () => {
                      />
                   </Form.Group>
                </div>
+               <Button
+                  className="mt-0"
+                  onClick={() => {
+                     handleBooking();
+                  }}
+               >
+                  Book
+               </Button>
             </div>
-            <Button
-               className="mt-3"
-               onClick={() => {
-                  handleBooking();
-               }}
-            >
-               Book
-            </Button>
          </div>
       </div>
    );

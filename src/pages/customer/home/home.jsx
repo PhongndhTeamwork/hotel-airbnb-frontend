@@ -12,10 +12,10 @@ import HotelImage10 from "../../../assets/images/hotel/hotel10.jpg";
 import HotelImage11 from "../../../assets/images/hotel/hotel11.jpg";
 import HotelImage12 from "../../../assets/images/hotel/hotel12.jpg";
 
-import { Col, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import HotelCard from "../../../components/hotel-card/hotel-card";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import SearchBar from "../../../components/search-bar/search-bar";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -141,39 +141,37 @@ const Home = () => {
 
    const { userInformation } = useSelector((state) => state.userLogin);
 
-   useEffect(() => {
-      if (!userInformation) return;
-      const config = {
+   const config = useMemo(() => {
+      return {
          headers: {
-            Authorization: `Bearer ${userInformation.token}`,
+            Authorization: `Bearer ${userInformation?.token}`,
             "Content-Type": "application/json",
          },
       };
-      // /get-hotel-as-customer?stayingDate=2024-05-29&leavingDate=2024-06-01&roomType=1&hotelName=a&hotelAddress=a&roomNumber=1&pageSize=4&pageNumber=1
-      axios
-         .get(
-            "/get-hotel-as-customer?roomNumber=1&pageSize=12&pageNumber=1",
-            config
-         )
-         .then(({ data }) => {
-            console.log(data.data);
-            setHotels(data.data);
-            setPageTotal(data.pageTotal);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-   }, [userInformation]);
+   }, [userInformation?.token]);
+
+   // useEffect(() => {
+   //    if (!userInformation) return;
+   //    // /get-hotel-as-customer?stayingDate=2024-05-29&leavingDate=2024-06-01&roomType=1&hotelName=a&hotelAddress=a&roomNumber=1&pageSize=4&pageNumber=1
+   //    axios
+   //       .get(
+   //          "/get-hotel-as-customer?roomNumber=1&pageSize=12&pageNumber=1",
+   //          config
+   //       )
+   //       .then(({ data }) => {
+   //          console.log(data.data);
+   //          setHotels(data.data);
+   //          setPageTotal(data.pageTotal);
+   //       })
+   //       .catch((error) => {
+   //          console.error(error);
+   //       });
+   // }, [config, userInformation]);
 
    useEffect(() => {
       if (!userInformation) return;
       // if(!isClickSearch) return;
-      const config = {
-         headers: {
-            Authorization: `Bearer ${userInformation.token}`,
-            "Content-Type": "application/json",
-         },
-      };
+      setHotels([]);
       axios
          .get(
             `/get-hotel-as-customer?stayingDate=${searchInfo.stayingDate}&leavingDate=${searchInfo.leavingDate}&roomType=${searchInfo.roomType}&hotelName=${searchInfo.hotelName}&hotelAddress=${searchInfo.hotelAddress}&roomNumber=${searchInfo.roomNumber}&pageSize=12&pageNumber=1`,
@@ -181,16 +179,36 @@ const Home = () => {
          )
          .then(({ data }) => {
             console.log(data);
-            setHotels(data.data);
             setPageTotal(data.pageTotal);
+            // setHotels(data.data);
+            for (let i = 0; i < data.data.length; i++) {
+               axios
+                  .get(`/get-image/${data.data[i].id}?imageType=0`, config)
+                  .then((images) => {
+                     setHotels((prevStatus) => [
+                        ...prevStatus,
+                        { ...data.data[i], images: images.data },
+                     ]);
+                  })
+                  .catch((error) => {
+                     console.error(error);
+                  });
+            }
          })
          .catch((error) => {
             console.error(error);
          });
-   }, [userInformation, searchInfo]);
+   }, [userInformation, searchInfo, config]);
 
    return (
       <div className="home">
+         {/* <Button
+            onClick={() => {
+               console.log(hotels);
+            }}
+         >
+            Click
+         </Button> */}
          <div className="home__search-bar d-flex justify-content-center">
             <SearchBar />
          </div>
@@ -206,7 +224,7 @@ const Home = () => {
                   key={hotelIndex}
                   className="home__hotel-card"
                >
-                  <HotelCard hotel={hotel} id={hotel.id}/>
+                  <HotelCard hotel={hotel} id={hotel.id} />
                </Col>
             ))}
          </Row>
@@ -214,7 +232,7 @@ const Home = () => {
             <PaginationControl
                page={page}
                between={4}
-               total={20*pageTotal}
+               total={20 * pageTotal}
                // total={pageTotal}
                limit={20}
                changePage={(page) => {
