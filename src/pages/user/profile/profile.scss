@@ -1,0 +1,38 @@
+.profile {
+   padding: 2rem var(--suitable-padding);
+
+
+   .profile__general {
+      position: relative;
+
+      .profile__background-black {
+         background-color: #98bfd0;
+         height: 37vh;
+         border-top-left-radius: 1rem;
+         border-top-right-radius: 1rem;
+      }
+
+      .profile__background-white {
+         background-color: rgb(209, 209, 209);
+         height: 37vh;
+         border-bottom-left-radius: 1rem;
+         border-bottom-right-radius: 1rem;
+      }
+
+      .profile__general-image {
+         position: absolute;
+         top: 10%;
+         left: 50%;
+         transform: translateX(-50%);
+      }
+   }
+
+   .profile__detail {
+      background-color: #f59a88;
+      border-radius: 1rem;
+      padding : 2rem 2rem;
+       .profile__detail-form {
+         padding: 2rem 3rem;
+      }
+   }
+}

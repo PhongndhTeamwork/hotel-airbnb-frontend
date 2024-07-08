@@ -170,6 +170,7 @@ const Header = () => {
                            borderBottomRightRadius: "0.25rem",
                         }}
                         onClick={() => {
+                           navigate("/profile")
                            setIsOpenDropdown(false);
                         }}
                      >
